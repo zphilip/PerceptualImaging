@@ -24,7 +24,7 @@ namespace PercVisualization
         }
         protected override bool Setup()
         {
-            devices.Add(new GestureCamera(@"C:\"));
+            devices.Add(new GestureCamera(@"."));
             //devices.Add(new PlayBackDevice(@"C:\"));
             TextOverlayRender textRender;
             filters.Add(filter = new AdaptiveTemporalFilter());

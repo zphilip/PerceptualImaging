@@ -189,6 +189,9 @@ namespace PercFoundation
             this.ClientSize = sz;
             this.Name = name;
             this.Text = name;
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BaseCameraApplication));
+
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Release);
             this.Load += new System.EventHandler(this.Start);
             this.ResumeLayout(false);
@@ -196,11 +199,13 @@ namespace PercFoundation
         }
         protected void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BaseCameraApplication));
             this.SuspendLayout();
             // 
             // BaseCameraApplication
             // 
             this.ClientSize = new System.Drawing.Size(1024, 768);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "BaseCameraApplication";
             this.Text = "Base Camera Application";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Release);
