@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='_UpgradeReport_Files/UpgradeReport.xslt'?><UpgradeLog>
+<Properties><Property Name="Solution" Value="OpenCLTemplate">
+</Property><Property Name="Solution File" Value="C:\Users\Blake\Projects\opencltemplate\OpenCLTemplate.sln">
+</Property><Property Name="User Options File" Value="C:\Users\Blake\Projects\opencltemplate\OpenCLTemplate.suo">
+</Property><Property Name="Date" Value="Tuesday, September 04, 2012">
+</Property><Property Name="Time" Value="11:23 AM">
+</Property></Properties><Event ErrorLevel="0" Project="" Source="OpenCLTemplate.sln" Description="File successfully backed up as C:\Users\Blake\Projects\opencltemplate\Backup\OpenCLTemplate.sln">
+</Event><Event ErrorLevel="0" Project="" Source="OpenCLTemplate.suo" Description="File successfully backed up as C:\Users\Blake\Projects\opencltemplate\Backup\OpenCLTemplate.suo">
+</Event><Event ErrorLevel="0" Project="OpenCLTemplate" Source="OpenCLTemplate\OpenCLTemplate.csproj" Description="Project file successfully backed up as C:\Users\Blake\Projects\opencltemplate\Backup\OpenCLTemplate\OpenCLTemplate.csproj">
+</Event><Event ErrorLevel="0" Project="OpenCLTemplate" Source="OpenCLTemplate\OpenCLTemplate.csproj.user" Description="Project user file successfully backed up as C:\Users\Blake\Projects\opencltemplate\Backup\OpenCLTemplate\OpenCLTemplate.csproj.user">
+</Event><Event ErrorLevel="0" Project="OpenCLTemplate" Source="OpenCLTemplate\CLCalc.cs" Description="File successfully backed up as C:\Users\Blake\Projects\opencltemplate\Backup\OpenCLTemplate\CLCalc.cs">
+</Event><Event ErrorLevel="0" Project="OpenCLTemplate" Source="OpenCLTemplate\CLGLInterop\CLGLInterop.cs" Description="File successfully backed up as C:\Users\Blake\Projects\opencltemplate\Backup\OpenCLTemplate\CLGLInterop\CLGLInterop.cs">
+</Event><Event ErrorLevel="0" Project="OpenCLTemplate" Source="OpenCLTemplate\Linear Algebra\CLOptimiz.cs" Description="File successfully backed up as C:\Users\Blake\Projects\opencltemplate\Backup\OpenCLTemplate\Linear Algebra\CLOptimiz.cs">
+</Event><Event ErrorLevel="0" Project="OpenCLTemplate" Source="OpenCLTemplate\Linear Algebra\CLOptimizSrc.cs" Description="File successfully backed up as C:\Users\Blake\Projects\opencltemplate\Backup\OpenCLTemplate\Linear Algebra\CLOptimizSrc.cs">
+</Event><Event ErrorLevel="0" Project="OpenCLTemplate" Source="OpenCLTemplate\ObjectClassifier\CLObjClassifier.cs" Description="File successfully backed up as C:\Users\Blake\Projects\opencltemplate\Backup\OpenCLTemplate\ObjectClassifier\CLObjClassifier.cs">
+</Event><Event ErrorLevel="0" Project="OpenCLTemplate" Source="OpenCLTemplate\FourierTransform\CLFFT.cs" Description="File successfully backed up as C:\Users\Blake\Projects\opencltemplate\Backup\OpenCLTemplate\FourierTransform\CLFFT.cs">
+</Event><Event ErrorLevel="0" Project="OpenCLTemplate" Source="OpenCLTemplate\IsoSurface\Isosurface.cs" Description="File successfully backed up as C:\Users\Blake\Projects\opencltemplate\Backup\OpenCLTemplate\IsoSurface\Isosurface.cs">
+</Event><Event ErrorLevel="0" Project="OpenCLTemplate" Source="OpenCLTemplate\ODEs\ODEs.cs" Description="File successfully backed up as C:\Users\Blake\Projects\opencltemplate\Backup\OpenCLTemplate\ODEs\ODEs.cs">
+</Event><Event ErrorLevel="0" Project="OpenCLTemplate" Source="OpenCLTemplate\Linear Algebra\SparseLinalg.cs" Description="File successfully backed up as C:\Users\Blake\Projects\opencltemplate\Backup\OpenCLTemplate\Linear Algebra\SparseLinalg.cs">
+</Event><Event ErrorLevel="0" Project="OpenCLTemplate" Source="OpenCLTemplate\SVM\CLSVM.cs" Description="File successfully backed up as C:\Users\Blake\Projects\opencltemplate\Backup\OpenCLTemplate\SVM\CLSVM.cs">
+</Event><Event ErrorLevel="0" Project="OpenCLTemplate" Source="OpenCLTemplate\frmCL.cs" Description="File successfully backed up as C:\Users\Blake\Projects\opencltemplate\Backup\OpenCLTemplate\frmCL.cs">
+</Event><Event ErrorLevel="0" Project="OpenCLTemplate" Source="OpenCLTemplate\frmCL.Designer.cs" Description="File successfully backed up as C:\Users\Blake\Projects\opencltemplate\Backup\OpenCLTemplate\frmCL.Designer.cs">
+</Event><Event ErrorLevel="0" Project="OpenCLTemplate" Source="OpenCLTemplate\frmCLEdit.cs" Description="File successfully backed up as C:\Users\Blake\Projects\opencltemplate\Backup\OpenCLTemplate\frmCLEdit.cs">
+</Event><Event ErrorLevel="0" Project="OpenCLTemplate" Source="OpenCLTemplate\frmCLEdit.Designer.cs" Description="File successfully backed up as C:\Users\Blake\Projects\opencltemplate\Backup\OpenCLTemplate\frmCLEdit.Designer.cs">
+</Event><Event ErrorLevel="0" Project="OpenCLTemplate" Source="OpenCLTemplate\Matrix.cs" Description="File successfully backed up as C:\Users\Blake\Projects\opencltemplate\Backup\OpenCLTemplate\Matrix.cs">
+</Event><Event ErrorLevel="0" Project="OpenCLTemplate" Source="OpenCLTemplate\SVM\MultiClassSVM.cs" Description="File successfully backed up as C:\Users\Blake\Projects\opencltemplate\Backup\OpenCLTemplate\SVM\MultiClassSVM.cs">
+</Event><Event ErrorLevel="0" Project="OpenCLTemplate" Source="OpenCLTemplate\OpenCLRTBController.cs" Description="File successfully backed up as C:\Users\Blake\Projects\opencltemplate\Backup\OpenCLTemplate\OpenCLRTBController.cs">
+</Event><Event ErrorLevel="0" Project="OpenCLTemplate" Source="OpenCLTemplate\SVM\ProblemConfig.cs" Description="File successfully backed up as C:\Users\Blake\Projects\opencltemplate\Backup\OpenCLTemplate\SVM\ProblemConfig.cs">
+</Event><Event ErrorLevel="0" Project="OpenCLTemplate" Source="OpenCLTemplate\SVM\ProblemSolver.cs" Description="File successfully backed up as C:\Users\Blake\Projects\opencltemplate\Backup\OpenCLTemplate\SVM\ProblemSolver.cs">
+</Event><Event ErrorLevel="0" Project="OpenCLTemplate" Source="OpenCLTemplate\Program.cs" Description="File successfully backed up as C:\Users\Blake\Projects\opencltemplate\Backup\OpenCLTemplate\Program.cs">
+</Event><Event ErrorLevel="0" Project="OpenCLTemplate" Source="OpenCLTemplate\Properties\AssemblyInfo.cs" Description="File successfully backed up as C:\Users\Blake\Projects\opencltemplate\Backup\OpenCLTemplate\Properties\AssemblyInfo.cs">
+</Event><Event ErrorLevel="0" Project="OpenCLTemplate" Source="OpenCLTemplate\Properties\Resources.Designer.cs" Description="File successfully backed up as C:\Users\Blake\Projects\opencltemplate\Backup\OpenCLTemplate\Properties\Resources.Designer.cs">
+</Event><Event ErrorLevel="0" Project="OpenCLTemplate" Source="OpenCLTemplate\Properties\Settings.Designer.cs" Description="File successfully backed up as C:\Users\Blake\Projects\opencltemplate\Backup\OpenCLTemplate\Properties\Settings.Designer.cs">
+</Event><Event ErrorLevel="0" Project="OpenCLTemplate" Source="OpenCLTemplate\Registro.cs" Description="File successfully backed up as C:\Users\Blake\Projects\opencltemplate\Backup\OpenCLTemplate\Registro.cs">
+</Event><Event ErrorLevel="0" Project="OpenCLTemplate" Source="OpenCLTemplate\SVM\SVM.cs" Description="File successfully backed up as C:\Users\Blake\Projects\opencltemplate\Backup\OpenCLTemplate\SVM\SVM.cs">
+</Event><Event ErrorLevel="0" Project="OpenCLTemplate" Source="OpenCLTemplate\SVM\TrainingSet.cs" Description="File successfully backed up as C:\Users\Blake\Projects\opencltemplate\Backup\OpenCLTemplate\SVM\TrainingSet.cs">
+</Event><Event ErrorLevel="0" Project="OpenCLTemplate" Source="OpenCLTemplate\SVM\TrainingUnit.cs" Description="File successfully backed up as C:\Users\Blake\Projects\opencltemplate\Backup\OpenCLTemplate\SVM\TrainingUnit.cs">
+</Event><Event ErrorLevel="0" Project="OpenCLTemplate" Source="OpenCLTemplate\SVM\XMLFuncs.cs" Description="File successfully backed up as C:\Users\Blake\Projects\opencltemplate\Backup\OpenCLTemplate\SVM\XMLFuncs.cs">
+</Event><Event ErrorLevel="0" Project="OpenCLTemplate" Source="OpenCLTemplate\Properties\Settings.settings" Description="File successfully backed up as C:\Users\Blake\Projects\opencltemplate\Backup\OpenCLTemplate\Properties\Settings.settings">
+</Event><Event ErrorLevel="0" Project="OpenCLTemplate" Source="OpenCLTemplate\CL.ico" Description="File successfully backed up as C:\Users\Blake\Projects\opencltemplate\Backup\OpenCLTemplate\CL.ico">
+</Event><Event ErrorLevel="0" Project="OpenCLTemplate" Source="OpenCLTemplate\frmCL.pt.resx" Description="File successfully backed up as C:\Users\Blake\Projects\opencltemplate\Backup\OpenCLTemplate\frmCL.pt.resx">
+</Event><Event ErrorLevel="0" Project="OpenCLTemplate" Source="OpenCLTemplate\frmCL.resx" Description="File successfully backed up as C:\Users\Blake\Projects\opencltemplate\Backup\OpenCLTemplate\frmCL.resx">
+</Event><Event ErrorLevel="0" Project="OpenCLTemplate" Source="OpenCLTemplate\frmCLEdit.resx" Description="File successfully backed up as C:\Users\Blake\Projects\opencltemplate\Backup\OpenCLTemplate\frmCLEdit.resx">
+</Event><Event ErrorLevel="0" Project="OpenCLTemplate" Source="OpenCLTemplate\Properties\Resources.resx" Description="File successfully backed up as C:\Users\Blake\Projects\opencltemplate\Backup\OpenCLTemplate\Properties\Resources.resx">
+</Event><Event ErrorLevel="0" Project="OpenCLTemplate" Source="OpenCLTemplate\OpenCLTemplate.csproj" Description="Project converted successfully">
+</Event><Event ErrorLevel="3" Project="OpenCLTemplate" Source="OpenCLTemplate\OpenCLTemplate.csproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="" Source="OpenCLTemplate.sln" Description="Solution converted successfully">
+</Event><Event ErrorLevel="3" Project="" Source="OpenCLTemplate.sln" Description="Converted">
+</Event><Event ErrorLevel="0" Project="OpenCLTemplate" Source="OpenCLTemplate\OpenCLTemplate.csproj" Description="Scan complete: Upgrade not required for project files.">
+</Event></UpgradeLog>
