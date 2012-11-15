@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PercFoundation", "Foundation\PercFoundation.csproj", "{2D72BE8B-873F-4859-ACA4-156E981AD7F2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PercVisualization", "Visualization\PercVisualization.csproj", "{6B6085BF-6215-4800-8F7E-240B2CDB72BA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2D72BE8B-873F-4859-ACA4-156E981AD7F2}.Debug|x64.ActiveCfg = Debug|x64
+		{2D72BE8B-873F-4859-ACA4-156E981AD7F2}.Debug|x64.Build.0 = Debug|x64
+		{2D72BE8B-873F-4859-ACA4-156E981AD7F2}.Debug|x86.ActiveCfg = Debug|x86
+		{2D72BE8B-873F-4859-ACA4-156E981AD7F2}.Debug|x86.Build.0 = Debug|x86
+		{2D72BE8B-873F-4859-ACA4-156E981AD7F2}.Release|x64.ActiveCfg = Release|x64
+		{2D72BE8B-873F-4859-ACA4-156E981AD7F2}.Release|x64.Build.0 = Release|x64
+		{2D72BE8B-873F-4859-ACA4-156E981AD7F2}.Release|x86.ActiveCfg = Release|x86
+		{2D72BE8B-873F-4859-ACA4-156E981AD7F2}.Release|x86.Build.0 = Release|x86
+		{6B6085BF-6215-4800-8F7E-240B2CDB72BA}.Debug|x64.ActiveCfg = Debug|x64
+		{6B6085BF-6215-4800-8F7E-240B2CDB72BA}.Debug|x64.Build.0 = Debug|x64
+		{6B6085BF-6215-4800-8F7E-240B2CDB72BA}.Debug|x86.ActiveCfg = Debug|x86
+		{6B6085BF-6215-4800-8F7E-240B2CDB72BA}.Debug|x86.Build.0 = Debug|x86
+		{6B6085BF-6215-4800-8F7E-240B2CDB72BA}.Release|x64.ActiveCfg = Release|x64
+		{6B6085BF-6215-4800-8F7E-240B2CDB72BA}.Release|x64.Build.0 = Release|x64
+		{6B6085BF-6215-4800-8F7E-240B2CDB72BA}.Release|x86.ActiveCfg = Release|x86
+		{6B6085BF-6215-4800-8F7E-240B2CDB72BA}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
