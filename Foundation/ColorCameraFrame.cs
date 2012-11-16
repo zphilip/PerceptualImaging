@@ -18,7 +18,7 @@ using System.Drawing.Imaging;
 using Cloo;
 using OpenTKWrapper;
 using System.IO;
-namespace PercFoundation
+namespace Perceptual.Foundation
 {
     public class ColorCameraFrame:CameraCaptureFrame<byte>
     {

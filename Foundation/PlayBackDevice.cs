@@ -16,7 +16,7 @@ using System.Text;
 using System.IO;
 using OpenTKWrapper;
 using System.Runtime.InteropServices;
-namespace PercFoundation
+namespace Perceptual.Foundation
 {
     public class PlayBackDevice:CameraDevice
     {

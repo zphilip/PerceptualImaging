@@ -13,7 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-namespace PercFoundation
+namespace Perceptual.Foundation
 {
     public interface CameraDataProcessor
     {

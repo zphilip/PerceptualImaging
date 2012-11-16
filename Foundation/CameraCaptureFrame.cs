@@ -19,7 +19,7 @@ using Cloo;
 using OpenTKWrapper;
 using OpenTKWrapper.CLGLInterop;
 using System.IO;
-namespace PercFoundation
+namespace Perceptual.Foundation
 {
     public enum FrameType
     {

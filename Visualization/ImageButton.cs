@@ -19,7 +19,7 @@ using OpenTK.Graphics;
 using OpenTKWrapper.CLGLInterop;
 using OpenTKWrapper;
 using OpenTK.Graphics.OpenGL;
-namespace PercVisualization
+namespace Perceptual.Visualization
 {
     public interface ImageButtonObserver
     {

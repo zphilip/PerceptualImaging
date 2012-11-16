@@ -16,7 +16,7 @@ using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using OpenTKWrapper.CLGLInterop;
 using OpenTKWrapper;
-namespace PercFoundation
+namespace Perceptual.Foundation
 {
     public partial class BaseCameraApplication : Form
     {

@@ -19,7 +19,7 @@ using OpenTK.Graphics.OpenGL;
 using OpenTKWrapper.CLGLInterop;
 using OpenTKWrapper;
 using System.IO;
-namespace PercFoundation
+namespace Perceptual.Foundation
 {
     public class AdaptiveTemporalFilter : CameraDataFilter
     {
@@ -144,7 +144,7 @@ namespace PercFoundation
             DepthCameraFrame frame = capture.GetDevices()[0].GetDepthImage();
             try
             {
-                StreamReader reader = new StreamReader(new MemoryStream(PercFoundation.Properties.Resources.AdaptiveTemporalFilter));
+                StreamReader reader = new StreamReader(new MemoryStream(Perceptual.Foundation.Properties.Resources.AdaptiveTemporalFilter));
                 string text = reader.ReadToEnd();
                 CLCalc.Program.Compile(capture.GetPrimaryDevice().GetPreprocessCode() + "\n#define HISTORY_SIZE " + historySize + "\n" + text);
                 reader.Close();

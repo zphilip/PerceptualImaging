@@ -17,7 +17,7 @@ using OpenTKWrapper;
 using OpenTK;
 using Cloo;
 using System.IO;
-namespace PercFoundation
+namespace Perceptual.Foundation
 {
     public class DepthCameraFrame : CameraCaptureFrame<float>
     {

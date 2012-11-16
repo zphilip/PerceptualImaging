@@ -8,7 +8,7 @@
     <ProjectGuid>{2D72BE8B-873F-4859-ACA4-156E981AD7F2}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>PercFoundation</RootNamespace>
+    <RootNamespace>Perceptual.Foundation</RootNamespace>
     <AssemblyName>PercFoundation</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>

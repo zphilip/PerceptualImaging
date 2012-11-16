@@ -13,10 +13,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using PercFoundation;
+using Perceptual.Foundation;
 using OpenTKWrapper;
 using OpenTKWrapper.CLGLInterop;
-namespace PercVisualization
+namespace Perceptual.Visualization
 {
     public abstract class ImageButtonRender : PercRender
     {

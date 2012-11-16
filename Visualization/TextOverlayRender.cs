@@ -20,8 +20,8 @@ using System.Drawing.Imaging;
 using OpenTKWrapper.CLGLInterop;
 using OpenTKWrapper;
 using OpenTK.Graphics.OpenGL;
-using PercFoundation;
-namespace PercVisualization
+using Perceptual.Foundation;
+namespace Perceptual.Visualization
 {
     public class Message
     {

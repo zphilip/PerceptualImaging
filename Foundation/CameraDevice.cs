@@ -14,7 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace PercFoundation
+namespace Perceptual.Foundation
 {
     public abstract class CameraDevice
     {

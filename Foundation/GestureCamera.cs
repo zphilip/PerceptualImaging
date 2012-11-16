@@ -18,7 +18,7 @@ using System.Drawing;
 
 using System.Drawing.Imaging;
 using OpenTKWrapper;
-namespace PercFoundation
+namespace Perceptual.Foundation
 {
     public class GestureCamera : CameraDevice
     {

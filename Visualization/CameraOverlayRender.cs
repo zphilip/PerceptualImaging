@@ -13,12 +13,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using PercFoundation;
+using Perceptual.Foundation;
 using OpenTK;
 using Cloo;
 using OpenTKWrapper;
 using OpenTKWrapper.CLGLInterop;
-namespace PercVisualization
+namespace Perceptual.Visualization
 {
     public class CameraOverlayRender : ImageButtonRender
     {
@@ -30,7 +30,7 @@ namespace PercVisualization
         protected int irTextureId;
         protected int rgbTextureId;
         protected CLCalc.Program.Kernel kernelCopyImage;
-        public override void Initialize(PercFoundation.BaseCameraApplication app, OpenTKWrapper.CLGLInterop.GLAdvancedRender glw)
+        public override void Initialize(Perceptual.Foundation.BaseCameraApplication app, OpenTKWrapper.CLGLInterop.GLAdvancedRender glw)
         {
             base.Initialize(app, glw);
             int w = app.GetPrimaryDevice().GetDepthImage().Width;
@@ -61,7 +61,7 @@ namespace PercVisualization
             Buttons.Add(colorButton);
         }
 
-        public override void Process(PercFoundation.BaseCameraApplication app)
+        public override void Process(Perceptual.Foundation.BaseCameraApplication app)
         {
             if (Visible)
             {

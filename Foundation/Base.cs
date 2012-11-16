@@ -19,7 +19,7 @@ using OpenTK.Graphics.OpenGL;
 using OpenTKWrapper;
 using System.Drawing;
 using OpenTK;
-namespace PercFoundation
+namespace Perceptual.Foundation
 {
     public struct float4
     {

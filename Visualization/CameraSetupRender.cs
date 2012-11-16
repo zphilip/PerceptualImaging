@@ -13,12 +13,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using PercFoundation;
+using Perceptual.Foundation;
 using OpenTKWrapper;
 using OpenTKWrapper.CLGLInterop;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
-namespace PercVisualization
+namespace Perceptual.Visualization
 {
     public class CameraSetupRender : PercRender
     {

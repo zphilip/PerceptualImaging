@@ -13,13 +13,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using PercFoundation;
+using Perceptual.Foundation;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using Cloo;
 using OpenTKWrapper.CLGLInterop;
 using OpenTKWrapper;
-namespace PercVisualization
+namespace Perceptual.Visualization
 {
     public class QuadSurfaceRender : PercRender
     {

@@ -13,11 +13,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using PercFoundation;
+using Perceptual.Foundation;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Examples.Shapes;
-namespace PercVisualization
+namespace Perceptual.Visualization
 {
     public class SceneBBoxRender : PercRender
     {

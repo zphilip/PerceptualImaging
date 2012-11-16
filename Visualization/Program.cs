@@ -14,7 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace PercVisualization
+namespace Perceptual.Visualization
 {
     static class Program
     {

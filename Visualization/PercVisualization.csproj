@@ -8,7 +8,7 @@
     <ProjectGuid>{6B6085BF-6215-4800-8F7E-240B2CDB72BA}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>PercVisualization</RootNamespace>
+    <RootNamespace>Perceptual.Visualization</RootNamespace>
     <AssemblyName>PercVisualization</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>

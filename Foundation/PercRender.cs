@@ -15,7 +15,7 @@ using System.Linq;
 using System.Text;
 using OpenTKWrapper;
 using OpenTKWrapper.CLGLInterop;
-namespace PercFoundation
+namespace Perceptual.Foundation
 {
     public interface PercRender
     {

@@ -19,8 +19,8 @@ using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using OpenTKWrapper.CLGLInterop;
 using OpenTKWrapper;
-using PercFoundation;
-namespace PercVisualization
+using Perceptual.Foundation;
+namespace Perceptual.Visualization
 {
     public class PointCloudRender : PercRender
     {
