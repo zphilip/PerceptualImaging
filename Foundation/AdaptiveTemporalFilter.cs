@@ -153,7 +153,7 @@ namespace Perceptual.Foundation
             catch (Exception ex)
             {
                 System.Console.WriteLine(ex.Message);
-                System.Console.WriteLine("Could not find MedianTemporalFilter.cl");
+                System.Console.WriteLine("Could not find AdaptiveTemporalFilter.cl");
                 Environment.Exit(1);
             }
             historyIndex = new CLCalc.Program.Value<int>(historySize - 1);
