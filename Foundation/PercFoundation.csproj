@@ -98,10 +98,6 @@
     <Reference Include="libpxcclr">
       <HintPath>..\dlls\libpxcclr.dll</HintPath>
     </Reference>
-    <Reference Include="OpenNI.Net, Version=1.5.2.23, Culture=neutral, PublicKeyToken=6b43d0c6cf74ee7f, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\dlls\OpenNI.Net.dll</HintPath>
-    </Reference>
     <Reference Include="OpenTK">
       <HintPath>..\dlls\OpenTK.dll</HintPath>
     </Reference>
