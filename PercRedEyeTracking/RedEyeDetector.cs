@@ -194,7 +194,7 @@ kernel void FindFaceLandmarks(global image2d_t depthImage,int2 rightEye,int2 lef
             kernelCopyIRImage.Execute(new CLCalc.Program.MemoryObject[] { depthFrame.GetMemoryObject(), irImageBuffer }, width * height);
             CLCalc.Program.CommQueues[CLCalc.Program.DefaultCQ].Read<byte>(((ComputeBuffer<byte>)irImageBuffer.VarPointer), true, 0, width * height, gray.ImageData, null);
             storage.Clear();
-            //Use OpenCV for face tracking in IR image. SDK has it's own face tracker, but it only operates in RGB. Either could be used for this example.
+            //Use OpenCV for face tracking in IR image. SDK has its own face tracker, but it only operates in RGB. Either could be used for this example.
             CvSeq<CvAvgComp> faces = Cv.HaarDetectObjects(gray, faceCascade, storage, ScaleFactor, 2, 0, new CvSize(40, 40));
             if (faces.Total > 0)
             {
