@@ -22,11 +22,11 @@ namespace Perceptual.Visualization
 {
     public class CameraOverlayRender : ImageButtonRender
     {
-        ImageButton depthButton;
-        ImageButton colorButton;
+        protected ImageButton depthButton;
+        protected ImageButton colorButton;
 
-        CLCalc.Program.Image2D rgbCopy;
-        CLCalc.Program.Image2D irCopy;
+        protected CLCalc.Program.Image2D rgbCopy;
+        protected CLCalc.Program.Image2D irCopy;
         protected int irTextureId;
         protected int rgbTextureId;
         protected CLCalc.Program.Kernel kernelCopyImage;

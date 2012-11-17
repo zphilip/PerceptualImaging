@@ -18,7 +18,14 @@ using Cloo;
 using OpenTK.Graphics.OpenGL;
 using OpenTKWrapper;
 using System.Drawing;
+using System.Numerics;
 using OpenTK;
+using MathNet.Numerics;
+using MathNet.Numerics.LinearAlgebra;
+
+using MathNet.Numerics.LinearAlgebra.Single;
+using MathNet.Numerics.LinearAlgebra.Generic.Factorization;
+using MathNet.Numerics.LinearAlgebra.Generic;
 namespace Perceptual.Foundation
 {
     public struct float4
@@ -61,7 +68,7 @@ namespace Perceptual.Foundation
         {
             return new CLCalc.Program.Value<float4>(pt);
         }
-        public static implicit operator OpenTK.Vector4(float4 M)
+        public static implicit operator Vector4(float4 M)
         {
             return new Vector4(M.x, M.y, M.z, M.w);
         }
@@ -137,7 +144,7 @@ namespace Perceptual.Foundation
             this.x = x;
             this.y = y;
         }
-        public static implicit operator OpenTK.Vector2(float2 M)
+        public static implicit operator Vector2(float2 M)
         {
             return new Vector2(M.x, M.y);
         }
@@ -218,7 +225,7 @@ namespace Perceptual.Foundation
         {
             return (float)Math.Sqrt((this.x - pt2.x) * (this.x - pt2.x) + (this.y - pt2.y) * (this.y - pt2.y) + (this.z - pt2.z) * (this.z - pt2.z));
         }
-        public static implicit operator OpenTK.Vector3(float3 M)
+        public static implicit operator Vector3(float3 M)
         {
             return new Vector3(M.x, M.y, M.z);
         }
@@ -595,9 +602,9 @@ namespace Perceptual.Foundation
             return M;
         }
 
-        public static implicit operator OpenTK.Matrix4(Matrix4f M)
+        public static implicit operator Matrix4(Matrix4f M)
         {
-            OpenTK.Matrix4 m = new OpenTK.Matrix4();
+            Matrix4 m = new Matrix4();
             m.M11 = M.m00;
             m.M12 = M.m01;
             m.M13 = M.m02;
@@ -616,7 +623,7 @@ namespace Perceptual.Foundation
             m.M44 = M.m33;
             return m;
         }
-        public static implicit operator Matrix4f(OpenTK.Matrix4 m)
+        public static implicit operator Matrix4f(Matrix4 m)
         {
             Matrix4f M = new Matrix4f();
             M.m00 = m.M11;
@@ -700,7 +707,7 @@ namespace Perceptual.Foundation
     }
     public static class Utilities
     {
-        public static Matrix4f Transpose(OpenTK.Matrix4 m)
+        public static Matrix4f Transpose(Matrix4 m)
         {
             Matrix4f modelView = new Matrix4f();
             modelView.m00 = m.M11;
@@ -787,6 +794,64 @@ namespace Perceptual.Foundation
 
             GL.Disable(EnableCap.Texture2D);
             return textureId;
+        }
+        public static Matrix4 RigidMotion(float4[] source, float4[] target)
+        {
+            Vector3 mean1 = new Vector3();
+            Vector3 mean2 = new Vector3();
+            for (int i = 0; i < source.Length; i++)
+            {
+                float4 pt1 = source[i];
+                float4 pt2 = target[i];
+                mean1.X += pt1.x;
+                mean1.Y += pt1.y;
+                mean1.Z += pt1.z;
+                mean2.X += pt2.x;
+                mean2.Y += pt2.y;
+                mean2.Z += pt2.z;
+            }
+            mean1 *= (1.0f / source.Length);
+            mean2 *= (1.0f / source.Length);
+            Matrix4f S = new Matrix4f(0);
+
+            for (int i = 0; i < source.Length; i++)
+            {
+                float4 pt1 = source[i];
+                float4 pt2 = target[i];
+                S.m00 += (pt1.x - mean1.X) * (pt2.x - mean2.X); S.m01 += (pt1.x - mean1.X) * (pt2.y - mean2.Y); S.m02 += (pt1.x - mean1.X) * (pt2.z - mean2.Z);
+                S.m10 += (pt1.y - mean1.Y) * (pt2.x - mean2.X); S.m11 += (pt1.y - mean1.Y) * (pt2.y - mean2.Y); S.m12 += (pt1.y - mean1.Y) * (pt2.z - mean2.Z);
+                S.m20 += (pt1.z - mean1.Z) * (pt2.x - mean2.X); S.m21 += (pt1.z - mean1.Z) * (pt2.y - mean2.Y); S.m22 += (pt1.z - mean1.Z) * (pt2.z - mean2.Z);
+            }
+            S = S / (float)source.Length;
+            DenseMatrix Q = new DenseMatrix(4, 4);
+            float tr = S.m00 + S.m11 + S.m22;
+            float4 delta = new float4(S.m12 - S.m21, S.m20 - S.m02, S.m01 - S.m10, 0);
+            Q[0, 0] = tr; Q[0, 1] = delta.x; Q[0, 2] = delta.y; Q[0, 3] = delta.z;
+            Q[1, 0] = delta.x; Q[1, 1] = S.m00 + S.m00 - tr; Q[1, 2] = S.m01 + S.m10; Q[1, 3] = S.m02 + S.m20;
+            Q[2, 0] = delta.y; Q[2, 1] = S.m10 + S.m01; Q[2, 2] = S.m11 + S.m11 - tr; Q[2, 3] = S.m12 + S.m21;
+            Q[3, 0] = delta.z; Q[3, 1] = S.m20 + S.m02; Q[3, 2] = S.m21 + S.m12; Q[3, 3] = S.m22 + S.m22 - tr;
+            Evd<float> evd = Q.Evd();
+            double maxEigenValue = -1.0E10f;
+            Quaternion qr = new Quaternion();
+
+            for (int i = 0; i < 4; i++)
+            {
+                Complex ev = evd.EigenValues()[i];
+                if (ev.Real > maxEigenValue)
+                {
+                    qr.W = evd.EigenVectors()[0, i];
+                    qr.X = evd.EigenVectors()[1, i];
+                    qr.Y = evd.EigenVectors()[2, i];
+                    qr.Z = evd.EigenVectors()[3, i];
+                    maxEigenValue = ev.Real;
+                }
+            }
+            Matrix4 R = Matrix4.Rotate(qr);
+            if (float.IsNaN(R.M11)) R = Matrix4.Identity;
+            Vector3 T = mean2 - Vector3.Transform(mean1, R);
+            Matrix4 MT = Matrix4.CreateTranslation(T.X, T.Y, T.Z);
+            MT = (R * MT);
+            return MT;
         }
     }
 }

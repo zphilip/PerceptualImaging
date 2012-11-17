@@ -19,6 +19,7 @@ using OpenTK.Graphics;
 using OpenTKWrapper.CLGLInterop;
 using OpenTKWrapper;
 using OpenTK.Graphics.OpenGL;
+using Perceptual.Foundation;
 namespace Perceptual.Visualization
 {
     public interface ImageButtonObserver
@@ -43,6 +44,14 @@ namespace Perceptual.Visualization
         public void SetTint(Color4 c)
         {
             this.tint = c;
+        }
+        public int2 GetLocation()
+        {
+            return new int2(xpos, ypos);
+        }
+        public int2 GetSize()
+        {
+            return new int2(width, height);
         }
         protected List<ImageButtonObserver> observers = new List<ImageButtonObserver>();
         public void AddObserver(ImageButtonObserver observer)
@@ -106,6 +115,9 @@ namespace Perceptual.Visualization
         {
             this.textureId = textureId;
             this.image = image;
+        }
+        public ImageButton()
+        {
         }
         public ImageButton(string name, Bitmap staticImage, bool active, int xpos, int ypos, int width, int height)
         {

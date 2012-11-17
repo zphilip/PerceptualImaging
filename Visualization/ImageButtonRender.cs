@@ -30,7 +30,7 @@ namespace Perceptual.Visualization
             initScreenHeight = glw.GLCtrl.Height;
         }
         public bool Visible = true;
-        public void Draw(GLAdvancedRender glw)
+        public virtual void Draw(GLAdvancedRender glw)
         {
             scaleX = initScreenWidth / (float)glw.GLCtrl.Width;
             scaleY = initScreenHeight / (float)glw.GLCtrl.Height;
@@ -67,6 +67,8 @@ namespace Perceptual.Visualization
                     {
                         if (button.MouseOver(xpos, ypos))
                         {
+
+                            if(current!=null)current.SetRollover(false);
                             current = button;
                             current.SetRollover(true);
                             found = true;
