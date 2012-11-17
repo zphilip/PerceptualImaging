@@ -49,8 +49,8 @@ namespace Perceptual.RedEye
                 FaceLandmarks faceDetection = redEyeDetector.GetFaceLandmarks();
                 float4 leftEye = faceDetection.leftEye;
                 float4 rightEye = faceDetection.rightEye;
-                float4 bridge = faceDetection.bridge;
-                float4 nose = faceDetection.nose;
+                float4 bridge = faceDetection.noseBridge;
+                float4 nose = faceDetection.noseTip;
 
                 GL.PushMatrix();
                 GL.Color3(0.0f, 0.0f, 0.5f);

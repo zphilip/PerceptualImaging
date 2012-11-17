@@ -31,15 +31,15 @@ namespace Perceptual.RedEye
         public int4 boundingBox2D;
         public float4 rightEye;
         public float4 leftEye;
-        public float4 bridge;
-        public float4 nose;
+        public float4 noseBridge;
+        public float4 noseTip;
         public FaceLandmarks(int4 boundingBox)
         {
             this.boundingBox2D = boundingBox;
             rightEye = new float4(0, 0, 0, -1);
             leftEye = new float4(0, 0, 0, -1);
-            bridge = new float4(0, 0, 0, -1);
-            nose = new float4(0, 0, 0, -1);
+            noseBridge = new float4(0, 0, 0, -1);
+            noseTip = new float4(0, 0, 0, -1);
         }
     }
     public class RedEyeDetector : CameraDataProcessor
@@ -110,14 +110,10 @@ namespace Perceptual.RedEye
         float4 bridge;
         float4 nose;
     } FaceDetection;
-kernel void CopyIRImage(global float4* depthData,read_only image2d_t rgbImage,global float2* uvImage,global uchar* irImage)
+kernel void CopyIRImage(global float4* depthData,global uchar* irImage)
 {
     int gid=get_global_id(0);
 	float ir=depthData[gid].w;
-	
-	const sampler_t smp = CLK_NORMALIZED_COORDS_TRUE | CLK_ADDRESS_CLAMP_TO_EDGE | CLK_FILTER_LINEAR;
-	float2 uv=uvImage[gid];
-	int4 rgb=read_imagei(rgbImage,smp,uv);
 	irImage[gid]=clamp((int)(255.0f*(ir-100)/1000.0f),0,255);
 
 }
@@ -195,9 +191,10 @@ kernel void FindFaceLandmarks(global image2d_t depthImage,int2 rightEye,int2 lef
             DepthCameraFrame depthFrame = capture.GetPrimaryDevice().GetDepthImage();
             ColorCameraFrame rgbFrame = capture.GetPrimaryDevice().GetColorImage();
             TextureMapFrame uvFrame = capture.GetPrimaryDevice().GetTextureImage();
-            kernelCopyIRImage.Execute(new CLCalc.Program.MemoryObject[] { depthFrame.GetMemoryObject(), rgbFrame.GetMemoryObject(), uvFrame.GetMemoryObject(), irImageBuffer }, width * height);
+            kernelCopyIRImage.Execute(new CLCalc.Program.MemoryObject[] { depthFrame.GetMemoryObject(), irImageBuffer }, width * height);
             CLCalc.Program.CommQueues[CLCalc.Program.DefaultCQ].Read<byte>(((ComputeBuffer<byte>)irImageBuffer.VarPointer), true, 0, width * height, gray.ImageData, null);
             storage.Clear();
+            //Use OpenCV for face tracking in IR image. SDK has it's own face tracker, but it only operates in RGB. Either could be used for this example.
             CvSeq<CvAvgComp> faces = Cv.HaarDetectObjects(gray, faceCascade, storage, ScaleFactor, 2, 0, new CvSize(40, 40));
             if (faces.Total > 0)
             {
@@ -206,14 +203,16 @@ kernel void FindFaceLandmarks(global image2d_t depthImage,int2 rightEye,int2 lef
                 Cv.SetImageROI(dilate, face);
                 Cv.SetImageROI(erode, face);
                 Cv.SetImageROI(tmp, face);
+                //Filter the image to enhance contrast between eyes/face.
+                Cv.Dilate(gray, tmp);
+                Cv.Dilate(tmp, dilate);
                 Cv.Threshold(gray, tmp, 0, 1, ThresholdType.Binary);
-                Cv.Dilate(gray, dilate);
-                Cv.Dilate(dilate, dilate);
                 Cv.Erode(gray, erode);
                 Cv.Sub(gray, erode, gray);
                 Cv.Mul(gray, tmp, gray);
                 Cv.SetImageROI(mask, face);
                 Cv.SetImageROI(imgLabel, face);
+                //Threshold out peaks.
                 Cv.Threshold(gray, mask, 128, 255, ThresholdType.Binary);
                 blobs.Clear();
                 uint result = blobs.Label(mask, imgLabel);
@@ -224,6 +223,8 @@ kernel void FindFaceLandmarks(global image2d_t depthImage,int2 rightEye,int2 lef
                 CvPoint center = new CvPoint(xCenter, yCenter);
                 CvPoint right = new CvPoint(-1, -1);
                 CvPoint left = new CvPoint(-1, -1);
+
+                //Assign blobs to eyes.
                 foreach (KeyValuePair<uint, CvBlob> item in blobs)
                 {
                     CvBlob b = item.Value;
@@ -250,7 +251,7 @@ kernel void FindFaceLandmarks(global image2d_t depthImage,int2 rightEye,int2 lef
                     rightEye2D = new int2(right.X + face.X, right.Y + face.Y);
                     leftEye2D = new int2(left.X + face.X, left.Y + face.Y);
                     boundingBox2D = new int4(face.X, face.Y, face.Width, face.Height);
-
+                    //Find bridge and nose. This was done in opencl to leverage read_imagef.
                     kernelFindFaceLandmarks.Execute(new CLCalc.Program.MemoryObject[] { filter.GetDepthImage(), rightEye2D, leftEye2D, boundingBox2D, faceDetectionBuffer }, 1);
                     ReadFaceLandmarksFromBuffer();
                     foundFace = true;
