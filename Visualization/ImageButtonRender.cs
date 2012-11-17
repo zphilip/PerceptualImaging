@@ -54,7 +54,7 @@ namespace Perceptual.Visualization
             }
         }
         protected ImageButton current = null;
-        public void ProcessMouseMove(int xpos, int ypos)
+        public bool ProcessMouseMove(int xpos, int ypos)
         {
             if (Visible)
             {
@@ -82,13 +82,14 @@ namespace Perceptual.Visualization
                         {
                             current.SetRollover(false);
                         }
-
                         current = null;
                     }
+                    return (current != null) ;
                 }
             }
+            return false;
         }
-        public void ProcessMouseButton(bool mouseDown)
+        public bool ProcessMouseButton(bool mouseDown)
         {
             if (Visible)
             {
@@ -99,6 +100,7 @@ namespace Perceptual.Visualization
                         if (current != null)
                         {
                             current.SetSelected(true);
+                            return true;
                         }
                     }
                     else
@@ -107,10 +109,12 @@ namespace Perceptual.Visualization
                         {
                             current.SetSelected(false);
                             current.SetRollover(false);
+                            return true;
                         }
                     }
                 }
             }
+            return false;
         }
         public abstract void Process(BaseCameraApplication app);
 

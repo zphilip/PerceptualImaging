@@ -20,7 +20,7 @@ namespace Perceptual.Visualization
         protected Message hints;
         public MainWindow()
         {
-            InitializeComponent(new System.Drawing.Size(1024,768),"Camera Data Visualization");
+            InitializeComponent(new System.Drawing.Size(1024, 768), "Camera Data Visualization");
         }
         protected override bool Setup()
         {
@@ -35,7 +35,7 @@ namespace Perceptual.Visualization
             renderers.Add(new CameraSetupRender(CameraSetupRender.SceneType.GL2D));
             renderers.Add(overlayRender = new CameraOverlayRender());
             renderers.Add(textRender = new TextOverlayRender());
-            textRender.Messages.Add(hints=new Message("", 0,glw.GLCtrl.Height-200,10));
+            textRender.Messages.Add(hints = new Message("", 0, glw.GLCtrl.Height - 200, 10));
             UpdateHints();
             return true;
         }
@@ -70,7 +70,7 @@ namespace Perceptual.Visualization
 
                         if (quadSurf != null)
                         {
-                            quadSurf.WireFrame= !quadSurf.WireFrame;
+                            quadSurf.WireFrame = !quadSurf.WireFrame;
 
                         }
                         UpdateHints();
@@ -131,34 +131,32 @@ namespace Perceptual.Visualization
             return false;
         }
 
-        protected void UpdateHints(){
-        hints.SetText(
-@"M - Mesh ("+((quadSurf.Visible)?"On":"Off")+@")
+        protected void UpdateHints()
+        {
+            hints.SetText(
+    @"M - Mesh (" + ((quadSurf.Visible) ? "On" : "Off") + @")
 C - Mesh Color (" + ((quadSurf.ShowColor) ? "On" : "Off") + @")
 W - Wireframe (" + ((quadSurf.WireFrame) ? "On" : "Off") + @")
 P - Point Cloud (" + ((pointCloud.Visisble) ? "On" : "Off") + @")
 B - Bounding Box (" + ((sceneRender.Visible) ? "On" : "Off") + @")
 O - Overlay (" + ((overlayRender.Visible) ? "On" : "Off") + @")
 R - Record (" + ((isRecording) ? "On" : "Off") + @")
-Space - Capture ("+((isRunning)?"On":"Off")+@")");
+Space - Capture (" + ((isRunning) ? "On" : "Off") + @")");
         }
         protected override bool OnMouseMove(MouseEventArgs e)
         {
-            overlayRender.ProcessMouseMove(e.X, e.Y);
-            return false;
+            return overlayRender.ProcessMouseMove(e.X, e.Y);
         }
 
         protected override bool OnMouseDown(MouseEventArgs e)
         {
-            overlayRender.ProcessMouseButton(true);
-            return false;
+            return overlayRender.ProcessMouseButton(true);
         }
 
         protected override bool OnMouseUp(MouseEventArgs e)
         {
 
-            overlayRender.ProcessMouseButton(false);
-            return false;
+            return overlayRender.ProcessMouseButton(false);
         }
 
     }
