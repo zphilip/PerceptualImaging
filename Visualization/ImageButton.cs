@@ -37,13 +37,18 @@ namespace Perceptual.Visualization
         protected bool active = true;
         protected bool selected = false;
         protected string name;
-        protected bool additionalVisible = true;
+        protected bool dynamicVisible = true;
         protected bool highlight = false;
         protected bool enabled = true;
         protected Color4 tint = new Color4(1.0f, 1.0f, 1.0f, 1.0f);
+        protected Color4 bgColor = new Color4(1.0f, 1.0f, 1.0f, 0.0f);
         public void SetTint(Color4 c)
         {
             this.tint = c;
+        }
+        public void SetBackground(Color4 c)
+        {
+            this.bgColor = c;
         }
         public int2 GetLocation()
         {
@@ -68,7 +73,7 @@ namespace Perceptual.Visualization
         }
         public void SetDynamicImageVisible(bool visible)
         {
-            this.additionalVisible = visible;
+            this.dynamicVisible = visible;
         }
         public void SetHighlighted(bool highlight)
         {
@@ -137,7 +142,6 @@ namespace Perceptual.Visualization
                 if (texture != -1)
                 {
                     GL.BindTexture(TextureTarget.Texture2D, texture);
-
                     System.Drawing.Rectangle rect = new System.Drawing.Rectangle(0, 0, staticImage.Width, staticImage.Height);
                     System.Drawing.Imaging.BitmapData bitmapdata = staticImage.LockBits(rect, System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
                     GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)All.ClampToEdge);
@@ -172,13 +176,27 @@ namespace Perceptual.Visualization
                 GL.Enable(EnableCap.Texture2D);
                 GL.PushMatrix();
 
-                GL.Color4(tint);
                 GL.Translate(xpos + width * 0.5f, ypos + height * 0.5f, 0);
 
-                if (!selected && rollover) GL.Scale(1.1f, 1.1f, 1);
-
+                if (!selected && rollover)
+                {
+                    GL.Scale(1.1f, 1.1f, 1);
+                }
+                else if (selected)
+                {
+                    GL.Scale(0.9f, 0.9f, 1);
+                }
                 GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
-                if (textureId >= 0 && additionalVisible)
+                GL.Color4(bgColor);
+                GL.Begin(BeginMode.Quads);
+                GL.Vertex2(-width * 0.5f, height * 0.5f);
+                GL.Vertex2(width * 0.5f, height * 0.5f);
+                GL.Vertex2(width * 0.5f, -height * 0.5f);
+                GL.Vertex2(-width * 0.5f, -height * 0.5f);
+                GL.End();
+
+                GL.Color4(tint);
+                if (textureId >= 0 && dynamicVisible)
                 {
                     GL.BindTexture(TextureTarget.Texture2D, textureId);
                     GL.Begin(BeginMode.Quads);
@@ -201,10 +219,10 @@ namespace Perceptual.Visualization
                 {
                     GL.Color3(1.0f, 1.0f, 1.0f);
                 }
+
                 if (texture >= 0)
                 {
                     GL.BindTexture(TextureTarget.Texture2D, texture);
-
                     GL.Begin(BeginMode.Quads);
                     GL.TexCoord2(0.0f, 1.0f); GL.Vertex2(-width * 0.5f, height * 0.5f);
                     GL.TexCoord2(1.0f, 1.0f); GL.Vertex2(width * 0.5f, height * 0.5f);
@@ -213,6 +231,8 @@ namespace Perceptual.Visualization
                     GL.End();
                     GL.BindTexture(TextureTarget.Texture2D, 0);
                 }
+
+
                 GL.PopMatrix();
 
                 GL.Disable(EnableCap.Texture2D);

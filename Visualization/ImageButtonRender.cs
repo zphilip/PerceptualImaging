@@ -16,6 +16,7 @@ using System.Text;
 using Perceptual.Foundation;
 using OpenTKWrapper;
 using OpenTKWrapper.CLGLInterop;
+
 namespace Perceptual.Visualization
 {
     public abstract class ImageButtonRender : PercRender
@@ -54,6 +55,7 @@ namespace Perceptual.Visualization
             }
         }
         protected ImageButton current = null;
+        protected ImageButton selected = null;
         public bool ProcessMouseMove(int xpos, int ypos)
         {
             if (Visible)
@@ -63,12 +65,15 @@ namespace Perceptual.Visualization
                 lock (this)
                 {
                     bool found = false;
-                    foreach (ImageButton button in Buttons)
+                    for (int i = Buttons.Count - 1; i >= 0; i--)
                     {
+                        ImageButton button = Buttons[i];
                         if (button.MouseOver(xpos, ypos))
                         {
-
-                            if(current!=null)current.SetRollover(false);
+                            if (current != null)
+                            {
+                                current.SetRollover(false);
+                            }
                             current = button;
                             current.SetRollover(true);
                             found = true;
@@ -84,13 +89,14 @@ namespace Perceptual.Visualization
                         }
                         current = null;
                     }
-                    return (current != null) ;
+                    return (current != null);
                 }
             }
             return false;
         }
         public bool ProcessMouseButton(bool mouseDown)
         {
+            
             if (Visible)
             {
                 lock (this)
@@ -100,15 +106,15 @@ namespace Perceptual.Visualization
                         if (current != null)
                         {
                             current.SetSelected(true);
+                            selected = current;
                             return true;
                         }
                     }
                     else
                     {
-                        if (current != null)
+                        if (selected != null)
                         {
-                            current.SetSelected(false);
-                            current.SetRollover(false);
+                            selected.SetSelected(false);
                             return true;
                         }
                     }

@@ -102,7 +102,7 @@ namespace Perceptual.Visualization
             GL.BindTexture(TextureTarget.Texture2D, 0);
 
         }
-        public void Initialize(BaseCameraApplication capture, GLAdvancedRender glw)
+        public virtual void Initialize(BaseCameraApplication capture, GLAdvancedRender glw)
         {
             // Create Bitmap and OpenGL texture
             textImage = new Bitmap(glw.GLCtrl.Width, glw.GLCtrl.Height); // match window size
