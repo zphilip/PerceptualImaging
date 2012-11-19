@@ -326,6 +326,14 @@ namespace Perceptual.Foundation
         {
             return new int4(Math.Max(this.x, v2.x), Math.Max(this.y, v2.y), Math.Max(this.z, v2.z), Math.Max(this.w, v2.w));
         }
+        public static bool operator ==(int4 c1, int4 c2)
+        {
+            return (c1.x == c2.x && c1.y == c2.y&&c1.z==c2.z&&c1.w==c2.w);
+        }
+        public static bool operator !=(int4 c1, int4 c2)
+        {
+            return (c1.x != c2.x || c1.y != c2.y||c1.z!=c2.z||c1.w!=c2.w);
+        }
         public static int4 operator +(int4 c1, int4 c2)
         {
             return new int4(c1.x + c2.x, c1.y + c2.y, c1.z + c2.z, c1.w + c2.w);
@@ -406,7 +414,14 @@ namespace Perceptual.Foundation
         {
             return new int2(c1.x * c2.x, c1.y * c2.y);
         }
-
+        public static bool operator ==(int2 c1, int2 c2)
+        {
+            return (c1.x==c2.x&&c1.y==c2.y);
+        }
+        public static bool operator !=(int2 c1, int2 c2)
+        {
+            return (c1.x != c2.x || c1.y != c2.y);
+        }
         public static int2 operator /(int2 c1, int a)
         {
             return new int2(c1.x / a, c1.y / a);
@@ -449,6 +464,14 @@ namespace Perceptual.Foundation
             this.x = x;
             this.y = y;
             this.z = z;
+        }
+        public static bool operator ==(int3 c1, int3 c2)
+        {
+            return (c1.x == c2.x && c1.y == c2.y && c1.z == c2.z);
+        }
+        public static bool operator !=(int3 c1, int3 c2)
+        {
+            return (c1.x != c2.x || c1.y != c2.y || c1.z != c2.z);
         }
         public static int3 operator +(int3 c1, int3 c2)
         {
@@ -802,6 +825,7 @@ namespace Perceptual.Foundation
                 q.X = (m.M13 + m.M31) * s;
                 q.Y = (m.M32 + m.M23) * s;
             }
+            q.Conjugate();
             return q;
         }
         public static int CreateTexture<T>(Bitmap image, out CLCalc.Program.Image2D CLTexture2D) where T : struct

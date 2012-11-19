@@ -162,7 +162,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <None Include="Resources\KeyFrame.cl" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="perc_icon.ico" />
