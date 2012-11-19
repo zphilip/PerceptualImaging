@@ -124,7 +124,7 @@ namespace Perceptual.Visualization
             GL.BindTexture(TextureTarget.Texture2D, 0);
         }
 
-        public void Draw(GLAdvancedRender glw)
+        public virtual void Draw(GLAdvancedRender glw)
         {
             if (textTextureId >= 0)
             {

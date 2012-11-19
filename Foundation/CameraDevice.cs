@@ -27,6 +27,19 @@ namespace Perceptual.Foundation
         protected float focalX = 1.0f, focalY = 1.0f;
         protected float minDepth = 200.0f;
         protected float maxDepth = 3000.0f;
+        protected float minIR = 100.0f;
+        public float GetMinIR()
+        {
+            return minIR;
+        }
+        public float GetMinDepth()
+        {
+            return minDepth;
+        }
+        public float GetMaxDepth()
+        {
+            return maxDepth;
+        }
         public string GetPreprocessCode()
         {
             return
@@ -34,6 +47,7 @@ namespace Perceptual.Foundation
             "\n#define HEIGHT " + depthFrame.Height +
             "\n#define COLOR_WIDTH " + colorFrame.Width +
             "\n#define COLOR_HEIGHT " + colorFrame.Height +
+            "\n#define MIN_IR " + minIR +
             "\n#define MIN_DEPTH " + minDepth.ToString(".0000") + "f" +
             "\n#define MAX_DEPTH " + maxDepth.ToString(".0000") + "f" +
             "\n#define FOCAL_X " + focalX.ToString(".0000") + "f" +
@@ -48,14 +62,7 @@ namespace Perceptual.Foundation
         {
             this.GroundPlane = M;
         }
-        public float GetMinDepth()
-        {
-            return minDepth;
-        }
-        public float GetMaxDepth()
-        {
-            return maxDepth;
-        }
+
         public float GetFocalLengthX()
         {
             return focalX;
