@@ -224,9 +224,9 @@ namespace Perceptual.Foundation
         {
             return "(" + x + "," + y + "," + z+")";
         }
-        public int length()
+        public float length()
         {
-            return (int)Math.Sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
+            return (float)Math.Sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
         }
         public float3(float4 pt)
         {
