@@ -109,7 +109,6 @@ namespace Perceptual.Visualization
         }
         #region OpenCL source
         string src = @"
-    #define MIN_IR 100.0f
     kernel void CopyImageToPointCloud(global float4* depthData,global float2* uvData, __read_only image2d_t originalImage, global float4* vertexData, global float4* colorData)
     {
        const sampler_t smp = CLK_NORMALIZED_COORDS_TRUE | //Natural coordinates

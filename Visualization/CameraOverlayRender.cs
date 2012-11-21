@@ -78,7 +78,6 @@ namespace Perceptual.Visualization
         }
         #region OpenCL source
         string src = @"
-        #define MIN_IR 100.0f
         inline int getIndex(int i,int j){
             return clamp(i,0,WIDTH-1)+clamp(j,0,HEIGHT-1)*WIDTH;
         }

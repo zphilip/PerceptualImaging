@@ -104,9 +104,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="RedEyeRender2D.cs" />
-    <Compile Include="RedEyeWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="RedEyeWindow.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RedEyeDetector.cs" />
@@ -135,16 +133,6 @@
     <Content Include="haarcascade_frontalface_alt.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Foundation\PercFoundation.csproj">
-      <Project>{2D72BE8B-873F-4859-ACA4-156E981AD7F2}</Project>
-      <Name>PercFoundation</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Visualization\PercVisualization.csproj">
-      <Project>{6B6085BF-6215-4800-8F7E-240B2CDB72BA}</Project>
-      <Name>PercVisualization</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -169,7 +169,6 @@ namespace Perceptual.Visualization
         }
         #region OpenCL source
         string src = @"
-        #define MIN_IR 100.0f
         #define MAX_DIFF 25.0f
         typedef struct {
 	        float4 minPoint;
