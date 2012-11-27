@@ -33,7 +33,6 @@ namespace Perceptual.Foundation
         protected const int erodeIterations = 1;
         protected const int dilateIterations = 2;
         protected const int historySize = 15;
-        protected const int radius1 = 1, radius2 = 2;
         protected bool once = true;
         public CLCalc.Program.Image2D depthImage;
         protected float[] depthCopy;
@@ -124,11 +123,11 @@ namespace Perceptual.Foundation
             }
             if (once)
             {
-                copyToTemporalBuffer.Execute(new CLCalc.Program.MemoryObject[] { depthCopyBuffer, depthFrame.GetMemoryObject(), depthTemporalBuffer, historyIndex }, new int[] { depthFrame.Width * depthFrame.Height });
+                copyToTemporalBuffer.Execute(new CLCalc.Program.MemoryObject[] {historyIndex, depthCopyBuffer, depthFrame.GetMemoryObject(), depthTemporalBuffer }, new int[] { depthFrame.Width * depthFrame.Height });
             }
             else
             {
-                updateBuffer.Execute(new CLCalc.Program.MemoryObject[] { depthCopyBuffer, depthFrame.GetMemoryObject(), depthTemporalBuffer, historyIndex }, new int[] { depthFrame.Width * depthFrame.Height });
+                updateBuffer.Execute(new CLCalc.Program.MemoryObject[] { historyIndex,depthCopyBuffer, depthFrame.GetMemoryObject(), depthTemporalBuffer }, new int[] { depthFrame.Width * depthFrame.Height });
             }
             historyIndex.value--;
             if (historyIndex.value < 0)
@@ -159,11 +158,11 @@ namespace Perceptual.Foundation
             historyIndex = new CLCalc.Program.Value<int>(historySize - 1);
             updateBuffer = new CLCalc.Program.Kernel("UpdateFilter");
             copyToTemporalBuffer = new CLCalc.Program.Kernel("CopyToTemporalBuffer");
-            depthBuffer = CLCalc.Program.Variable.Create(new ComputeBuffer<float>(CLCalc.Program.Context, ComputeMemoryFlags.ReadWrite, 4 * frame.Width * frame.Height));
+            depthBuffer = CLCalc.Program.Variable.Create(new ComputeBuffer<float>(CLCalc.Program.Context, ComputeMemoryFlags.ReadWrite, 4 * frame.Width * frame.Height));            
+            depthCopyBuffer = new CLCalc.Program.Variable(new float[4 * frame.Width * frame.Height]);
             depthTemporalBuffer = CLCalc.Program.Variable.Create(new ComputeBuffer<float>(CLCalc.Program.Context, ComputeMemoryFlags.ReadWrite, historySize * 4 * frame.Width * frame.Height));
 
-            depthCopyBuffer = CLCalc.Program.Variable.Create(new ComputeBuffer<float>(CLCalc.Program.Context, ComputeMemoryFlags.ReadWrite, 4 * frame.Width * frame.Height));
-            depthImage = new CLCalc.Program.Image2D(depthCopy = new float[frame.Height * frame.Width * 4], frame.Width, frame.Height);
+            depthImage = new CLCalc.Program.Image2D(new float[frame.Height * frame.Width * 4], frame.Width, frame.Height);
             uvImage = new CLCalc.Program.Image2D(new float[frame.Height * frame.Width * 4], frame.Width, frame.Height);
 
             kernelErodeFilter = new CLCalc.Program.Kernel("ErodeFilter");

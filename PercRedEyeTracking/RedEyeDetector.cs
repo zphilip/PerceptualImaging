@@ -117,7 +117,7 @@ kernel void CopyIRImage(global float4* depthData,global uchar* irImage)
 	irImage[gid]=clamp((int)(255.0f*(ir-100)/1000.0f),0,255);
 
 }
-kernel void FindFaceLandmarks(global image2d_t depthImage,int2 rightEye,int2 leftEye,int4 boundingBox,global FaceDetection* face)
+kernel void FindFaceLandmarks(int2 rightEye,int2 leftEye,int4 boundingBox,global image2d_t depthImage,global FaceDetection* face)
 {
 
 	const sampler_t smp = CLK_NORMALIZED_COORDS_FALSE | CLK_ADDRESS_CLAMP_TO_EDGE | CLK_FILTER_LINEAR;
@@ -252,7 +252,7 @@ kernel void FindFaceLandmarks(global image2d_t depthImage,int2 rightEye,int2 lef
                     leftEye2D = new int2(left.X + face.X, left.Y + face.Y);
                     boundingBox2D = new int4(face.X, face.Y, face.Width, face.Height);
                     //Find bridge and nose. This was done in opencl to leverage read_imagef.
-                    kernelFindFaceLandmarks.Execute(new CLCalc.Program.MemoryObject[] { filter.GetDepthImage(), rightEye2D, leftEye2D, boundingBox2D, faceDetectionBuffer }, 1);
+                    kernelFindFaceLandmarks.Execute(new CLCalc.Program.MemoryObject[] { rightEye2D, leftEye2D, boundingBox2D, filter.GetDepthImage(), faceDetectionBuffer }, 1);
                     ReadFaceLandmarksFromBuffer();
                     foundFace = true;
                 }

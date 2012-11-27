@@ -53,9 +53,17 @@ namespace Perceptual.Foundation
             this.z = pt.z;
             this.w = 1.0f;
         }
+        public float4 cross(float4 v1)
+        {
+            float4 cross = new float4();
+            cross.x = this.y * v1.z - this.z * v1.y;
+            cross.y = this.z * v1.x - this.x * v1.z;
+            cross.z = this.x * v1.y - this.y * v1.x;
+            return cross;
+        }
         public override string ToString()
         {
-            return "("+x+","+y+","+z+","+w+")";
+            return "(" + x + "," + y + "," + z + "," + w + ")";
         }
         public bool inside(BoundingBox bbox)
         {
@@ -145,7 +153,7 @@ namespace Perceptual.Foundation
         }
         public override string ToString()
         {
-            return "(" + x + "," + y+")";
+            return "(" + x + "," + y + ")";
         }
         public float2(float x, float y)
         {
@@ -222,7 +230,7 @@ namespace Perceptual.Foundation
         }
         public override string ToString()
         {
-            return "(" + x + "," + y + "," + z+")";
+            return "(" + x + "," + y + "," + z + ")";
         }
         public float length()
         {
@@ -298,6 +306,10 @@ namespace Perceptual.Foundation
         {
             x = val[0]; y = val[1]; z = val[2]; w = val[3];
         }
+        public int length()
+        {
+            return Math.Abs(x) + Math.Abs(y) + Math.Abs(z) + Math.Abs(w);
+        }
         public override string ToString()
         {
             return "(" + x + "," + y + "," + z + "," + w + ")";
@@ -328,11 +340,11 @@ namespace Perceptual.Foundation
         }
         public static bool operator ==(int4 c1, int4 c2)
         {
-            return (c1.x == c2.x && c1.y == c2.y&&c1.z==c2.z&&c1.w==c2.w);
+            return (c1.x == c2.x && c1.y == c2.y && c1.z == c2.z && c1.w == c2.w);
         }
         public static bool operator !=(int4 c1, int4 c2)
         {
-            return (c1.x != c2.x || c1.y != c2.y||c1.z!=c2.z||c1.w!=c2.w);
+            return (c1.x != c2.x || c1.y != c2.y || c1.z != c2.z || c1.w != c2.w);
         }
         public static int4 operator +(int4 c1, int4 c2)
         {
@@ -368,10 +380,7 @@ namespace Perceptual.Foundation
         {
             return (int)Math.Sqrt((this.x - pt2.x) * (this.x - pt2.x) + (this.y - pt2.y) * (this.y - pt2.y) + (this.z - pt2.z) * (this.z - pt2.z));
         }
-        public int length()
-        {
-            return (int)Math.Sqrt(this.x * this.x + this.y * this.y + this.z * this.z + this.w * this.w);
-        }
+
     }
     public struct int2
     {
@@ -390,6 +399,10 @@ namespace Perceptual.Foundation
             this.y = y;
         }
 
+        public int length()
+        {
+            return Math.Abs(x) + Math.Abs(y);
+        }
         public static implicit operator CLCalc.Program.MemoryObject(int2 pt)
         {
             return new CLCalc.Program.Value<int2>(pt);
@@ -416,7 +429,7 @@ namespace Perceptual.Foundation
         }
         public static bool operator ==(int2 c1, int2 c2)
         {
-            return (c1.x==c2.x&&c1.y==c2.y);
+            return (c1.x == c2.x && c1.y == c2.y);
         }
         public static bool operator !=(int2 c1, int2 c2)
         {
@@ -736,7 +749,7 @@ namespace Perceptual.Foundation
         }
         public override string ToString()
         {
-            return "["+minPoint+","+maxPoint+"] : "+center;
+            return "[" + minPoint + "," + maxPoint + "] : " + center;
         }
         public static implicit operator CLCalc.Program.MemoryObject(BoundingBox pt)
         {
@@ -857,7 +870,6 @@ namespace Perceptual.Foundation
             image.UnlockBits(bitmapdata);
             GL.BindTexture(TextureTarget.Texture2D, 0);
             CLTexture2D = new CLCalc.Program.Image2D(textureId);
-
             GL.Disable(EnableCap.Texture2D);
             return textureId;
         }
@@ -880,12 +892,12 @@ namespace Perceptual.Foundation
             Bitmap image = new Bitmap(width, height);
             System.Drawing.Rectangle rect = new System.Drawing.Rectangle(0, 0, image.Width, image.Height);
             System.Drawing.Imaging.BitmapData bitmapdata = image.LockBits(rect, System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-
+            
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)All.ClampToEdge);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)All.ClampToEdge);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)All.Linear);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)All.Linear);
-
+            
             GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, image.Width, image.Height,
                 0, OpenTK.Graphics.OpenGL.PixelFormat.Rgba, PixelType.UnsignedByte, bitmapdata.Scan0);
             image.UnlockBits(bitmapdata);
@@ -956,7 +968,7 @@ namespace Perceptual.Foundation
         public static void WriteRawImage2D(CLCalc.Program.Image2D imageBuffer, string path)
         {
             System.Console.WriteLine("SAVING IMAGE " + path);
-            int sz = imageBuffer.Width*imageBuffer.Height;
+            int sz = imageBuffer.Width * imageBuffer.Height;
             float[] data = new float[sz * 4];
             float[] data2 = new float[sz * 4];
             imageBuffer.ReadFromDeviceTo(data);
@@ -1050,13 +1062,13 @@ namespace Perceptual.Foundation
                 dest.Close();
             }
         }
-        public static void WriteFloatDataToFile(CLCalc.Program.Variable dataBuffer, int rows, int cols,int slices, int comp, string path)
+        public static void WriteFloatDataToFile(CLCalc.Program.Variable dataBuffer, int rows, int cols, int slices, int comp, string path)
         {
 
             System.Console.WriteLine("SAVING IMAGE " + path);
-            int sz = rows*cols*slices;
-            float[] data = new float[sz* comp];
-            float[] data2 = new float[sz* comp];
+            int sz = rows * cols * slices;
+            float[] data = new float[sz * comp];
+            float[] data2 = new float[sz * comp];
             dataBuffer.ReadFromDeviceTo(data);
             for (int i = 0; i < data.Length; i++)
             {
@@ -1075,11 +1087,11 @@ namespace Perceptual.Foundation
                 dest.Close();
             }
         }
-        public static void WriteFloatDataToFile(CLCalc.Program.Variable dataBuffer,int width,int height,int comp, string path)
+        public static void WriteFloatDataToFile(CLCalc.Program.Variable dataBuffer, int width, int height, int comp, string path)
         {
 
             System.Console.WriteLine("SAVING IMAGE " + path);
-            int sz = width * height*comp;
+            int sz = width * height * comp;
             float[] data = new float[sz];
             dataBuffer.ReadFromDeviceTo(data);
             float[] data2 = new float[sz];

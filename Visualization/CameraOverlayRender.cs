@@ -27,23 +27,20 @@ namespace Perceptual.Visualization
 
         protected CLCalc.Program.Image2D rgbCopy;
         protected CLCalc.Program.Image2D irCopy;
-        protected int irTextureId;
-        protected int rgbTextureId;
         protected CLCalc.Program.Kernel kernelCopyImage;
         public override void Initialize(Perceptual.Foundation.BaseCameraApplication app, OpenTKWrapper.CLGLInterop.GLAdvancedRender glw)
         {
             base.Initialize(app, glw);
             int w = app.GetPrimaryDevice().GetDepthImage().Width;
             int h = app.GetPrimaryDevice().GetDepthImage().Height;
-            irTextureId = Utilities.CreateTexture<float>(out irCopy, w, h);
-            rgbTextureId = Utilities.CreateTexture<float>(out rgbCopy, w, h);
-
+            irCopy = new CLCalc.Program.Image2D(new float[4 * w * h], w, h);
+            rgbCopy = new CLCalc.Program.Image2D(new float[4 * w * h], w, h);
             depthButton = new ImageButton("IR Image", null, false, glw.GLCtrl.Width - irCopy.Width - 10, glw.GLCtrl.Height - irCopy.Height - 20, irCopy.Width, irCopy.Height);
-            depthButton.SetDynamicImage(irCopy, irTextureId);
+            depthButton.SetDynamicImage(irCopy);
 
-       
-            colorButton = new ImageButton("Color Image", null, false, glw.GLCtrl.Width - rgbCopy.Width - 10, -30, rgbCopy.Width, rgbCopy.Height);
-            colorButton.SetDynamicImage(rgbCopy, rgbTextureId);
+
+            colorButton = new ImageButton("Color Image", null, false, glw.GLCtrl.Width - rgbCopy.Width - 10, 0, rgbCopy.Width, rgbCopy.Height);
+            colorButton.SetDynamicImage(rgbCopy);
 
             try
             {
@@ -63,8 +60,7 @@ namespace Perceptual.Visualization
 
         public override void Process(Perceptual.Foundation.BaseCameraApplication app)
         {
-            if (Visible)
-            {
+            if (Visible){
                 DepthCameraFrame depthFrame = app.GetPrimaryDevice().GetDepthImage();
                 ColorCameraFrame colorFrame = app.GetPrimaryDevice().GetColorImage();
                 TextureMapFrame textureFrame = app.GetPrimaryDevice().GetTextureImage();
@@ -112,12 +108,12 @@ namespace Perceptual.Visualization
             float4 pt,color;
 	        pt=read_imagef(depthData,smpNearest,coords);
             if(pt.w>MIN_IR){
-            color=computeColor(pt,uvData,originalImage);      
-            write_imagef(colorCopy,coords,color);
-            float lum=clamp(sqrt(pt.w-MIN_IR)/50.0f,0.0f,1.0f);            
-            color=(float4)(lum,lum,lum,1.0f);
-            color=mix(color,(float4)(0.5f*lum,1.0f*lum,0.5f*lum,1.0f),m);
-            write_imagef(irCopy,coords,color);
+                color=computeColor(pt,uvData,originalImage);      
+                write_imagef(colorCopy,coords,color);
+                float lum=clamp(sqrt(pt.w-MIN_IR)/50.0f,0.0f,1.0f);            
+                color=(float4)(lum,lum,lum,1.0f);
+                color=mix(color,(float4)(0.5f*lum,1.0f*lum,0.5f*lum,1.0f),m);
+                write_imagef(irCopy,coords,color);
             } else {
                 write_imagef(colorCopy,coords,(float4)(0,0,0,0));
                 write_imagef(irCopy,coords,(float4)(0,0,0,0));

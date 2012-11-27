@@ -20,7 +20,7 @@ namespace Perceptual.Visualization
         protected Message hints;
         public MainWindow()
         {
-            InitializeComponent(new System.Drawing.Size(1024, 768), "Camera Data Visualization");
+            InitializeComponent(new System.Drawing.Size(1024,768), "Camera Data Visualization");
         }
         protected override bool Setup()
         {
@@ -41,6 +41,16 @@ namespace Perceptual.Visualization
         }
         protected override bool OnKeyPressed(KeyEventArgs e)
         {
+            if (e.KeyCode == Keys.Escape)
+            {
+                this.Close();
+                return true;
+            }
+            else if (e.KeyCode == Keys.F11)
+            {
+                SwitchToFullScreen();
+            }
+            else
             if (e.KeyData == Keys.C)
             {
 
@@ -133,6 +143,7 @@ namespace Perceptual.Visualization
 
         protected void UpdateHints()
         {
+            
             hints.SetText(
     @"M - Mesh (" + ((quadSurf.Visible) ? "On" : "Off") + @")
 C - Mesh Color (" + ((quadSurf.ShowColor) ? "On" : "Off") + @")
@@ -142,6 +153,7 @@ B - Bounding Box (" + ((sceneRender.Visible) ? "On" : "Off") + @")
 O - Overlay (" + ((overlayRender.Visible) ? "On" : "Off") + @")
 R - Record (" + ((isRecording) ? "On" : "Off") + @")
 Space - Capture (" + ((isRunning) ? "On" : "Off") + @")");
+             
         }
         protected override bool OnMouseMove(MouseEventArgs e)
         {

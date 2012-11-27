@@ -31,6 +31,8 @@ namespace Perceptual.Foundation
             this.inputDirectory = inputDirectory;
             this.focalX = 224.502f;
             this.focalY = 230.494f;
+            this.centerX = 160;
+            this.centerY = 120;
 
         }
         public override bool Initialize()

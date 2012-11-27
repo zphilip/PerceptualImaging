@@ -36,7 +36,7 @@ namespace OpenTKWrapper.CLGLInterop
         public delegate bool OnMouseMove(MouseEventArgs e);
         /// <summary>Sets CL GL shared variables</summary>
         /// <param name="DeviceNumber">Index of device to use from ComputePlatform.Platforms[0].Devices. Use -1 for default</param>
-        private void CreateCLGLContext(int DeviceNumber)
+        private void CreateCLGLContext(int DeviceNumber, int platformNumber)
         {
             IntPtr curDC = wglGetCurrentDC();
 
@@ -46,15 +46,15 @@ namespace OpenTKWrapper.CLGLInterop
 
             ComputeContextProperty p1 = new ComputeContextProperty(ComputeContextPropertyName.CL_GL_CONTEXT_KHR, raw_context_handle);
             ComputeContextProperty p2 = new ComputeContextProperty(ComputeContextPropertyName.CL_WGL_HDC_KHR, curDC);
-            ComputeContextProperty p3 = new ComputeContextProperty(ComputeContextPropertyName.Platform, ComputePlatform.Platforms[0].Handle.Value);
+            ComputeContextProperty p3 = new ComputeContextProperty(ComputeContextPropertyName.Platform, ComputePlatform.Platforms[platformNumber].Handle.Value);
             List<ComputeContextProperty> props = new List<ComputeContextProperty>() { p1, p2, p3 };
 
             ComputeContextPropertyList Properties = new ComputeContextPropertyList(props);
 
             List<ComputeDevice> GLDevices = null;
-            if (DeviceNumber >= 0 && ComputePlatform.Platforms[0].Devices.Count > 1)
+            if (DeviceNumber >= 0 && ComputePlatform.Platforms[platformNumber].Devices.Count > 0)
             {
-                GLDevices = new List<ComputeDevice>() { ComputePlatform.Platforms[0].Devices[1] };
+                GLDevices = new List<ComputeDevice>() { ComputePlatform.Platforms[platformNumber].Devices[0] };
                 CLGLCtx = new ComputeContext(GLDevices, Properties, null, IntPtr.Zero);
                 CQ = new ComputeCommandQueue(CLGLCtx, GLDevices[0], ComputeCommandQueueFlags.None);
             }
@@ -101,11 +101,23 @@ namespace OpenTKWrapper.CLGLInterop
         {
             this.ParentForm = ParentForm;
 
-            InitGL(CreateCLGLCtx, DeviceNumber);
+            InitGL(CreateCLGLCtx, DeviceNumber,0);
 
         }
+        public GLAdvancedRender(System.Windows.Forms.Form ParentForm, bool CreateCLGLCtx,ComputeDeviceTypes type)
+        {
+            this.ParentForm = ParentForm;
+
+            InitGL(CreateCLGLCtx, 0,0, type);
+
+        }
+        /// <summary>OpenGL for  GPU</summary>
+        protected void InitGL(bool CreateCLGLCtx, int platformNumber,int deviceNumber)
+        {
+            InitGL(CreateCLGLCtx, deviceNumber,platformNumber, ComputeDeviceTypes.Gpu);
+        }
         /// <summary>Typical OpenGL initialization</summary>
-        protected void InitGL(bool CreateCLGLCtx, int deviceNumber)
+        protected void InitGL(bool CreateCLGLCtx, int deviceNumber,int platformNumber,ComputeDeviceTypes deviceType)
         {
 
             #region OpenGL Control creation with stereo capabilities
@@ -141,12 +153,35 @@ namespace OpenTKWrapper.CLGLInterop
 
             if (CreateCLGLCtx)
             {
-                CreateCLGLContext(deviceNumber);
-                CLCalc.InitCL(ComputeDeviceTypes.Gpu, CLGLCtx, CQ);
+                bool foundDevice = false;
+                platformNumber = 0;
+                foreach (ComputePlatform platform in ComputePlatform.Platforms)
+                {
+                    deviceNumber = 0;
+                    foreach (ComputeDevice device in platform.Devices)
+                    {
+                        if (deviceType == device.Type)
+                        {
+                            System.Console.WriteLine("Found Device " + device.ToString());
+                            CreateCLGLContext(deviceNumber, platformNumber);
+                            CLCalc.InitCL(deviceType, CLGLCtx, CQ);
+                            GLCtrl.MakeCurrent();
+                            foundDevice = true;
+                            break;
+                        }
+                        deviceNumber++;
+                    }
+                    platformNumber++;
+                }
+
+                if (!foundDevice)
+                {
+                    //use the first device.
+                    CreateCLGLContext(0,0);
+                    CLCalc.InitCL(deviceType, CLGLCtx, CQ);
+                    GLCtrl.MakeCurrent();
+                }
             }
-
-
-            GLCtrl.MakeCurrent();
 
             //AntiAliasing e blend
             GL.Enable(EnableCap.LineSmooth);
@@ -255,16 +290,17 @@ namespace OpenTKWrapper.CLGLInterop
         }
         private void sOGL_MouseDown(object sender, MouseEventArgs e)
         {
+            bool consumed = false;
             if (mouseDownHandle != null)
             {
-                if (mouseDownHandle.Invoke(e)) return;
+                consumed=mouseDownHandle.Invoke(e);
             }
             MouseButton = e.Button;
             if (e.Button == MouseButtons.Left)
             {
                 if (!clicado)
                 {
-                    clicado = true;
+                    if(!consumed)clicado = true;
                     originalX = e.X;
                     originalY = e.Y;
                 }
@@ -274,7 +310,7 @@ namespace OpenTKWrapper.CLGLInterop
             {
                 if (!clicDireito)
                 {
-                    clicDireito = true;
+                    if (!consumed) clicDireito = true;
                     origXDireito = e.X;
                     origYDireito = e.Y;
                 }
@@ -284,7 +320,7 @@ namespace OpenTKWrapper.CLGLInterop
             {
                 if (!clickMiddle)
                 {
-                    clickMiddle = true;
+                    if (!consumed) clickMiddle = true;
                     lastX = e.X;
                     lastY = e.Y;
                 }
@@ -307,9 +343,10 @@ namespace OpenTKWrapper.CLGLInterop
         public MouseButtons MouseButton = MouseButtons.None;
         private void sOGL_MouseUp(object sender, MouseEventArgs e)
         {
+            bool consumed=false;
             if (mouseUpHandle != null)
             {
-                if (mouseUpHandle.Invoke(e)) return;
+                consumed=mouseUpHandle.Invoke(e);
             }
             MouseButton = e.Button;
             if (MouseMode == MouseMoveMode.TranslateModel || MouseMode == MouseMoveMode.RotateModel)
@@ -346,7 +383,7 @@ namespace OpenTKWrapper.CLGLInterop
         {
             if (mouseMoveHandle != null)
             {
-                if (mouseMoveHandle.Invoke(e)) return;
+                mouseMoveHandle.Invoke(e);
             }
             //MouseMoveRedrawCount++;
             //if (MouseMoveRedrawCount == 5) MouseMoveRedrawCount = 0;
@@ -593,6 +630,7 @@ namespace OpenTKWrapper.CLGLInterop
         /// <summary>Near distance to clip at</summary>
         public float zNear = 200.0f;
 
+        
         Vector frontCpy = new Vector(0, 0, 1);
         Vector upCpy = new Vector(0, 1, 0);
         Vector esqCpy = new Vector(1, 0, 0);
@@ -653,7 +691,7 @@ namespace OpenTKWrapper.CLGLInterop
         }
 
         /// <summary>Updates temporary displacement vectors to internal drawing vectors.</summary>
-        private void ConsolidateRepositioning()
+        public void ConsolidateRepositioning()
         {
             frontCpy = new Vector(front);
             upCpy = new Vector(up);
@@ -4492,7 +4530,7 @@ __kernel void f(__global float* vertex,
                 }
             }
 
-            CLCalc.Program.CommQueues[CLCalc.Program.DefaultCQ].AcquireGLObjects(ClooCLGLBuffers, null);
+            if (ClooCLGLBuffers.Count > 0) CLCalc.Program.CommQueues[CLCalc.Program.DefaultCQ].AcquireGLObjects(ClooCLGLBuffers, null);
         }
 
         /// <summary>Releases one OpenCL variable created from GL buffers. Ignores variables not created from OpenGL buffer</summary>
@@ -4517,9 +4555,11 @@ __kernel void f(__global float* vertex,
                     var.AcquiredInOpenCL = false;
                 }
             }
-
-            CLCalc.Program.CommQueues[CLCalc.Program.DefaultCQ].ReleaseGLObjects(ClooCLGLBuffers, null);
-            CLCalc.Program.CommQueues[CLCalc.Program.DefaultCQ].Finish();
+            if (ClooCLGLBuffers.Count > 0)
+            {
+                CLCalc.Program.CommQueues[CLCalc.Program.DefaultCQ].ReleaseGLObjects(ClooCLGLBuffers, null);
+                CLCalc.Program.CommQueues[CLCalc.Program.DefaultCQ].Finish();
+            }
         }
 
         /// <summary>Copies bitmap data to a OpenGL texture. Note: texture is flipped in Y axis, needs to correct texture coordinates</summary>

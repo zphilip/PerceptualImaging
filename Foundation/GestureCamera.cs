@@ -27,13 +27,7 @@ namespace Perceptual.Foundation
         private pxcmStatus sts;
         private PXCMImage[] images = new PXCMImage[2];
         private PXCMScheduler.SyncPoint[] sps = new PXCMScheduler.SyncPoint[2];
-        private PXCMGesture gesture;
-
-        static pxcmStatus OnGesure(ref PXCMGesture.Gesture data, Boolean active)
-        {
-            Console.WriteLine("[gesture] label={0}, active={1}, timeStamp={2}", data.label, active, data.timeStamp);
-            return pxcmStatus.PXCM_STATUS_NO_ERROR;
-        }
+        protected uint startIndex = 0;
 
         static PXCMGesture.Gesture.OnGesture OnGesture { get; set; }
 
@@ -42,6 +36,8 @@ namespace Perceptual.Foundation
         {
             this.focalX = 224.502f;
             this.focalY = 230.494f;
+            this.centerX = 160;
+            this.centerY = 120;
             this.bbox = new BoundingBox(new float4(-300, -250, 250, 1), new float4(300, 250, 650, 1));
             this.GroundPlane = OpenTK.Matrix4.Identity;
             this.minDepth = 200.0f;
@@ -92,80 +88,85 @@ namespace Perceptual.Foundation
 
             return true;
         }
-        protected uint startIndex = 0;
 
-        PXCMFaceAnalysis.Detection.Data face_data;
-        PXCMFaceAnalysis.Landmark.PoseData pdata;
-        PXCMFaceAnalysis.Landmark.LandmarkData data;
         public override unsafe void GetNextFrame()
         {
-            PXCMImage.ImageData refEquals;
-
-            sts = capture.ReadStreamAsync(images, out sps[0]);
-            PXCMScheduler.SyncPoint.SynchronizeEx(sps);
-            images[1].AcquireAccess(PXCMImage.Access.ACCESS_READ, out refEquals);
-
-            short* depth = (short*)refEquals.buffer.planes[0];
-
-            ushort* confidence = (ushort*)refEquals.buffer.planes[1];
-            float* uv = (float*)refEquals.buffer.planes[2];
-
-            int width = (int)images[1].imageInfo.width;
-            int height = (int)images[1].imageInfo.height;
-            if (depthFrame == null) this.depthFrame = new DepthCameraFrame(width, height);
-            if (textureFrame == null) this.textureFrame = new TextureMapFrame(width, height);
-
-            for (int i = 0; i < width * height; i++)
+            lock (this)
             {
+                if (capture == null) return;
+                PXCMImage.ImageData refEquals;
 
-                this.textureFrame.data[2 * i] = uv[2 * i];
-                this.textureFrame.data[2 * i + 1] = uv[2 * i + 1];
-                this.depthFrame.data[4 * i] = depth[3 * i];
-                this.depthFrame.data[4 * i + 1] = depth[3 * i + 1];
-                this.depthFrame.data[4 * i + 2] = depth[3 * i + 2];
-                this.depthFrame.data[4 * i + 3] = confidence[i];
+                sts = capture.ReadStreamAsync(images, out sps[0]);
+                PXCMScheduler.SyncPoint.SynchronizeEx(sps);
+                images[1].AcquireAccess(PXCMImage.Access.ACCESS_READ, out refEquals);
+
+                short* depth = (short*)refEquals.buffer.planes[0];
+
+                ushort* confidence = (ushort*)refEquals.buffer.planes[1];
+                float* uv = (float*)refEquals.buffer.planes[2];
+
+                int width = (int)images[1].imageInfo.width;
+                int height = (int)images[1].imageInfo.height;
+                if (depthFrame == null) this.depthFrame = new DepthCameraFrame(width, height);
+                if (textureFrame == null) this.textureFrame = new TextureMapFrame(width, height);
+
+                for (int i = 0; i < width * height; i++)
+                {
+
+                    this.textureFrame.data[2 * i] = uv[2 * i];
+                    this.textureFrame.data[2 * i + 1] = uv[2 * i + 1];
+                    this.depthFrame.data[4 * i] = depth[3 * i];
+                    this.depthFrame.data[4 * i + 1] = depth[3 * i + 1];
+                    this.depthFrame.data[4 * i + 2] = depth[3 * i + 2];
+                    this.depthFrame.data[4 * i + 3] = confidence[i];
+                }
+
+
+                images[1].ReleaseAccess(ref refEquals);
+                ((CLCalc.Program.Variable)depthFrame.GetMemoryObject()).WriteToDevice(depthFrame.data);
+                ((CLCalc.Program.Variable)textureFrame.GetMemoryObject()).WriteToDevice(textureFrame.data);
+
+
+                images[0].AcquireAccess(PXCMImage.Access.ACCESS_READ, PXCMImage.ColorFormat.COLOR_FORMAT_RGB32, out refEquals);
+
+                byte* rgb = (byte*)refEquals.buffer.planes[0];
+
+                width = (int)images[0].imageInfo.width;
+                height = (int)images[0].imageInfo.height;
+                if (colorFrame == null) this.colorFrame = new ColorCameraFrame(width, height);
+
+                int offset = 0;
+                for (int i = 0; i < width * height; i++)
+                {
+
+                    this.colorFrame.data[offset] = rgb[offset + 2];
+                    this.colorFrame.data[offset + 1] = rgb[offset + 1];
+                    this.colorFrame.data[offset + 2] = rgb[offset];
+                    this.colorFrame.data[offset + 3] = rgb[offset + 3];
+                    offset += 4;
+                }
+
+                images[0].ReleaseAccess(ref refEquals);
+                ((CLCalc.Program.Image2D)colorFrame.GetMemoryObject()).WriteToDevice(colorFrame.data);
+
+                foreach (PXCMScheduler.SyncPoint s in sps) if (s != null) s.Dispose();
+                foreach (PXCMImage i in images) if (i != null) i.Dispose();
             }
-
-
-            images[1].ReleaseAccess(ref refEquals);
-            ((CLCalc.Program.Variable)depthFrame.GetMemoryObject()).WriteToDevice(depthFrame.data);
-            ((CLCalc.Program.Variable)textureFrame.GetMemoryObject()).WriteToDevice(textureFrame.data);
-
-
-            images[0].AcquireAccess(PXCMImage.Access.ACCESS_READ, PXCMImage.ColorFormat.COLOR_FORMAT_RGB32, out refEquals);
-
-            byte* rgb = (byte*)refEquals.buffer.planes[0];
-
-            width = (int)images[0].imageInfo.width;
-            height = (int)images[0].imageInfo.height;
-            if (colorFrame == null) this.colorFrame = new ColorCameraFrame(width, height);
-
-            int offset = 0;
-            for (int i = 0; i < width * height; i++)
-            {
-
-                this.colorFrame.data[offset] = rgb[offset + 2];
-                this.colorFrame.data[offset + 1] = rgb[offset + 1];
-                this.colorFrame.data[offset + 2] = rgb[offset];
-                this.colorFrame.data[offset + 3] = rgb[offset + 3];
-                offset += 4;
-            }
-
-            images[0].ReleaseAccess(ref refEquals);
-            ((CLCalc.Program.Image2D)colorFrame.GetMemoryObject()).WriteToDevice(colorFrame.data);
-
-            foreach (PXCMScheduler.SyncPoint s in sps) if (s != null) s.Dispose();
-            foreach (PXCMImage i in images) if (i != null) i.Dispose();
         }
 
         public override void Dispose()
         {
+            lock (this)
+            {
+                depthFrame.CloseAllOpenStreams();
+                colorFrame.CloseAllOpenStreams();
+                textureFrame.CloseAllOpenStreams();
 
-            depthFrame.CloseAllOpenStreams();
-            colorFrame.CloseAllOpenStreams();
-            textureFrame.CloseAllOpenStreams();
-            capture.Dispose();
-            session.Dispose();
+                capture.Dispose();
+                session.Dispose();
+                capture = null;
+                session = null;
+            }
         }
     }
 }

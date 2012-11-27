@@ -73,29 +73,48 @@
     </ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Cloo">
+    <Reference Include="Cloo, Version=0.9.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\dlls\Cloo.dll</HintPath>
     </Reference>
-    <Reference Include="OpenCvSharp">
+    <Reference Include="libpxcclr, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\dlls\libpxcclr.dll</HintPath>
+    </Reference>
+    <Reference Include="MathNet.Numerics, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\dlls\MathNet.Numerics.dll</HintPath>
+    </Reference>
+    <Reference Include="MathNet.Numerics.FSharp">
+      <HintPath>..\dlls\MathNet.Numerics.FSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="MathNet.Numerics.IO">
+      <HintPath>..\dlls\MathNet.Numerics.IO.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenCvSharp, Version=2.0.4657.38767, Culture=neutral, PublicKeyToken=6adad1e807fea099, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\dlls\OpenCvSharp.dll</HintPath>
     </Reference>
-    <Reference Include="OpenCvSharp.Blob">
+    <Reference Include="OpenCvSharp.Blob, Version=1.0.0.0, Culture=neutral, PublicKeyToken=6adad1e807fea099, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\dlls\OpenCvSharp.Blob.dll</HintPath>
     </Reference>
-    <Reference Include="OpenTK">
+    <Reference Include="OpenNI.Net, Version=1.5.2.23, Culture=neutral, PublicKeyToken=6b43d0c6cf74ee7f, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\dlls\OpenNI.Net.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTK, Version=1.0.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\dlls\OpenTK.dll</HintPath>
     </Reference>
-    <Reference Include="OpenTK.GLControl">
+    <Reference Include="OpenTK.GLControl, Version=1.0.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\dlls\OpenTK.GLControl.dll</HintPath>
-    </Reference>
-    <Reference Include="OpenTKWrapper">
-      <HintPath>..\dlls\OpenTKWrapper.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
@@ -104,7 +123,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="RedEyeRender2D.cs" />
-    <Compile Include="RedEyeWindow.cs" />
+    <Compile Include="RedEyeWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RedEyeDetector.cs" />
@@ -133,6 +154,20 @@
     <Content Include="haarcascade_frontalface_alt.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Foundation\PercFoundation.csproj">
+      <Project>{2D72BE8B-873F-4859-ACA4-156E981AD7F2}</Project>
+      <Name>PercFoundation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\OpenTKWrapper\OpenCLTemplate\OpenTKWrapper.csproj">
+      <Project>{917DB62E-833E-41AC-A730-890BC0141E7B}</Project>
+      <Name>OpenTKWrapper</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Visualization\PercVisualization.csproj">
+      <Project>{6B6085BF-6215-4800-8F7E-240B2CDB72BA}</Project>
+      <Name>PercVisualization</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

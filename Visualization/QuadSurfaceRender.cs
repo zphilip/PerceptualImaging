@@ -25,7 +25,7 @@ namespace Perceptual.Visualization
     {
         public bool ShowColor = true, Visible = true, WireFrame = false;
 
-        protected int[] QuadMeshBufs = new int[4];
+        protected int[] QuadMeshBufs = new int[3];
         protected float[] ColorData, PositionData, NormalData;
 
         protected CLCalc.Program.Variable positionBuffer, colorBuffer, normalBuffer;
@@ -59,7 +59,7 @@ namespace Perceptual.Visualization
 
             }
 
-            GL.GenBuffers(4, QuadMeshBufs);
+            GL.GenBuffers(3, QuadMeshBufs);
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, QuadMeshBufs[0]);
             GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(ColorData.Length * sizeof(float)), ColorData, BufferUsageHint.StreamDraw);
@@ -162,7 +162,7 @@ namespace Perceptual.Visualization
                 AdaptiveTemporalFilter filter = (AdaptiveTemporalFilter)app.GetImageFilter();
                 CLGLInteropFunctions.AcquireGLElements(new CLCalc.Program.MemoryObject[] { positionBuffer, colorBuffer, normalBuffer });
                 CLCalc.Program.MemoryObject[] args = new CLCalc.Program.MemoryObject[] { 
-                filter.GetDepthImage(),filter.GetTextureImage(),colorFrame.GetMemoryObject(),positionBuffer,colorBuffer,normalBuffer, app.GetPrimaryDevice().GetBoundingBox()};
+                 app.GetPrimaryDevice().GetBoundingBox(),filter.GetDepthImage(),filter.GetTextureImage(),colorFrame.GetMemoryObject(),positionBuffer,colorBuffer,normalBuffer};
                 kernelCopyImage.Execute(args, new int[] { depthFrame.Width, depthFrame.Height });
                 CLGLInteropFunctions.ReleaseGLElements(new CLCalc.Program.MemoryObject[] { positionBuffer, colorBuffer, normalBuffer });
             }
@@ -206,13 +206,13 @@ namespace Perceptual.Visualization
            }
         }
         kernel void CopyImageToMesh(
+            BoundingBox bbox,
             read_only image2d_t depthData,
             read_only image2d_t uvData,
             read_only image2d_t originalImage,
             global float4* vertexBuffer, 
             global float4* colorData,
-            global float* normalBuffer,
-            BoundingBox bbox){
+            global float* normalBuffer){
 
             const sampler_t smpNearest = CLK_NORMALIZED_COORDS_FALSE | CLK_ADDRESS_CLAMP | CLK_FILTER_NEAREST;
             int i = get_global_id(0);

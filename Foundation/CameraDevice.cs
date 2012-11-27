@@ -25,6 +25,7 @@ namespace Perceptual.Foundation
         protected BoundingBox bbox = new BoundingBox(new float4(-300, -250, 250, 1), new float4(300, 250, 650, 1));
         protected OpenTK.Matrix4 GroundPlane = OpenTK.Matrix4.Identity;
         protected float focalX = 1.0f, focalY = 1.0f;
+        protected float centerX = 0, centerY = 0;
         protected float minDepth = 200.0f;
         protected float maxDepth = 3000.0f;
         protected float minIR = 100.0f;
@@ -42,9 +43,11 @@ namespace Perceptual.Foundation
         }
         public string GetPreprocessCode()
         {
-            return
+           string code=
             "\n#define WIDTH " + depthFrame.Width +
             "\n#define HEIGHT " + depthFrame.Height +
+            "\n#define CENTER_X " + centerX.ToString(".0000") + "f" +
+            "\n#define CENTER_Y " + centerY.ToString(".0000") + "f" +
             "\n#define COLOR_WIDTH " + colorFrame.Width +
             "\n#define COLOR_HEIGHT " + colorFrame.Height +
             "\n#define MIN_IR " + minIR +
@@ -52,7 +55,7 @@ namespace Perceptual.Foundation
             "\n#define MAX_DEPTH " + maxDepth.ToString(".0000") + "f" +
             "\n#define FOCAL_X " + focalX.ToString(".0000") + "f" +
             "\n#define FOCAL_Y " + focalY.ToString(".0000") + "f\n";
-
+           return code;
         }
         public Matrix4f GetGroundPlane()
         {

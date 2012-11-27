@@ -213,7 +213,7 @@ kernel void DilateFilter(global float4* input,global float4* output){
 	}
 	output[index]=finalValue;
 }
-kernel void CopyToTemporalBuffer(global float4* motionBuffer,global float4* depthBuffer,global float4* depthTemporalBuffer, int index){
+kernel void CopyToTemporalBuffer(int index,global float4* motionBuffer,global float4* depthBuffer,global float4* depthTemporalBuffer){
 	const int gid = get_global_id(0);
 	
 	depthTemporalBuffer+=(HISTORY_SIZE*gid);
@@ -222,7 +222,7 @@ kernel void CopyToTemporalBuffer(global float4* motionBuffer,global float4* dept
 	if(val.w<MIN_CONFIDENCE)val.w=0.0f; else val.w=1.0f;
 	motionBuffer[gid]=val;
 }
-kernel void UpdateFilter(global float4* motionBuffer,global float4* depthBuffer,global float4* depthTemporalBuffer, int index){
+kernel void UpdateFilter(int index,global float4* motionBuffer,global float4* depthBuffer,global float4* depthTemporalBuffer){
 	const int gid = get_global_id(0);
 	
 	depthTemporalBuffer+=(HISTORY_SIZE*gid);
@@ -273,8 +273,8 @@ kernel void CopyImage(global float4* depthData,global float2* uvData,__write_onl
 		value.w=0.0f;
 		value.z=MAX_DEPTH*4;
 	}
-	value.x=(i-WIDTH/2)*value.z/FOCAL_X; 
-	value.y=(HEIGHT/2-j)*value.z/FOCAL_Y; 
+	value.x=(i-CENTER_X)*value.z/FOCAL_X; 
+	value.y=(CENTER_Y-j)*value.z/FOCAL_Y; 
 	
 	write_imagef(depthImage, coords,value);  
 	

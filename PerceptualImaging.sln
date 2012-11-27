@@ -7,38 +7,60 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PercVisualization", "Visual
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PercRedEyeTracking", "PercRedEyeTracking\PercRedEyeTracking.csproj", "{41F551E7-8AF5-4D45-8E41-BAB1DD04C59B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenTKWrapper", "OpenTKWrapper\OpenCLTemplate\OpenTKWrapper.csproj", "{917DB62E-833E-41AC-A730-890BC0141E7B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
 		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2D72BE8B-873F-4859-ACA4-156E981AD7F2}.Debug|Any CPU.ActiveCfg = Debug|x64
 		{2D72BE8B-873F-4859-ACA4-156E981AD7F2}.Debug|x64.ActiveCfg = Debug|x64
 		{2D72BE8B-873F-4859-ACA4-156E981AD7F2}.Debug|x64.Build.0 = Debug|x64
 		{2D72BE8B-873F-4859-ACA4-156E981AD7F2}.Debug|x86.ActiveCfg = Debug|x86
 		{2D72BE8B-873F-4859-ACA4-156E981AD7F2}.Debug|x86.Build.0 = Debug|x86
+		{2D72BE8B-873F-4859-ACA4-156E981AD7F2}.Release|Any CPU.ActiveCfg = Release|x64
 		{2D72BE8B-873F-4859-ACA4-156E981AD7F2}.Release|x64.ActiveCfg = Release|x64
 		{2D72BE8B-873F-4859-ACA4-156E981AD7F2}.Release|x64.Build.0 = Release|x64
 		{2D72BE8B-873F-4859-ACA4-156E981AD7F2}.Release|x86.ActiveCfg = Release|x86
 		{2D72BE8B-873F-4859-ACA4-156E981AD7F2}.Release|x86.Build.0 = Release|x86
+		{6B6085BF-6215-4800-8F7E-240B2CDB72BA}.Debug|Any CPU.ActiveCfg = Debug|x64
 		{6B6085BF-6215-4800-8F7E-240B2CDB72BA}.Debug|x64.ActiveCfg = Debug|x64
 		{6B6085BF-6215-4800-8F7E-240B2CDB72BA}.Debug|x64.Build.0 = Debug|x64
 		{6B6085BF-6215-4800-8F7E-240B2CDB72BA}.Debug|x86.ActiveCfg = Debug|x86
 		{6B6085BF-6215-4800-8F7E-240B2CDB72BA}.Debug|x86.Build.0 = Debug|x86
+		{6B6085BF-6215-4800-8F7E-240B2CDB72BA}.Release|Any CPU.ActiveCfg = Release|x64
 		{6B6085BF-6215-4800-8F7E-240B2CDB72BA}.Release|x64.ActiveCfg = Release|x64
 		{6B6085BF-6215-4800-8F7E-240B2CDB72BA}.Release|x64.Build.0 = Release|x64
 		{6B6085BF-6215-4800-8F7E-240B2CDB72BA}.Release|x86.ActiveCfg = Release|x86
 		{6B6085BF-6215-4800-8F7E-240B2CDB72BA}.Release|x86.Build.0 = Release|x86
+		{41F551E7-8AF5-4D45-8E41-BAB1DD04C59B}.Debug|Any CPU.ActiveCfg = Debug|x64
 		{41F551E7-8AF5-4D45-8E41-BAB1DD04C59B}.Debug|x64.ActiveCfg = Debug|x64
 		{41F551E7-8AF5-4D45-8E41-BAB1DD04C59B}.Debug|x64.Build.0 = Debug|x64
 		{41F551E7-8AF5-4D45-8E41-BAB1DD04C59B}.Debug|x86.ActiveCfg = Debug|x86
 		{41F551E7-8AF5-4D45-8E41-BAB1DD04C59B}.Debug|x86.Build.0 = Debug|x86
+		{41F551E7-8AF5-4D45-8E41-BAB1DD04C59B}.Release|Any CPU.ActiveCfg = Release|x64
 		{41F551E7-8AF5-4D45-8E41-BAB1DD04C59B}.Release|x64.ActiveCfg = Release|x64
 		{41F551E7-8AF5-4D45-8E41-BAB1DD04C59B}.Release|x64.Build.0 = Release|x64
 		{41F551E7-8AF5-4D45-8E41-BAB1DD04C59B}.Release|x86.ActiveCfg = Release|x86
 		{41F551E7-8AF5-4D45-8E41-BAB1DD04C59B}.Release|x86.Build.0 = Release|x86
+		{917DB62E-833E-41AC-A730-890BC0141E7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{917DB62E-833E-41AC-A730-890BC0141E7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{917DB62E-833E-41AC-A730-890BC0141E7B}.Debug|x64.ActiveCfg = Debug|x64
+		{917DB62E-833E-41AC-A730-890BC0141E7B}.Debug|x64.Build.0 = Debug|x64
+		{917DB62E-833E-41AC-A730-890BC0141E7B}.Debug|x86.ActiveCfg = Debug|x86
+		{917DB62E-833E-41AC-A730-890BC0141E7B}.Debug|x86.Build.0 = Debug|x86
+		{917DB62E-833E-41AC-A730-890BC0141E7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{917DB62E-833E-41AC-A730-890BC0141E7B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{917DB62E-833E-41AC-A730-890BC0141E7B}.Release|x64.ActiveCfg = Release|x64
+		{917DB62E-833E-41AC-A730-890BC0141E7B}.Release|x64.Build.0 = Release|x64
+		{917DB62E-833E-41AC-A730-890BC0141E7B}.Release|x86.ActiveCfg = Release|x86
+		{917DB62E-833E-41AC-A730-890BC0141E7B}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

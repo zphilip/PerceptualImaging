@@ -85,11 +85,11 @@ namespace Perceptual.Visualization
 
                 foreach (Message message in Messages)
                 {
-                    if (message.isDirty())
-                    {
+                    if (message.isDirty()){
                         dirty = true;
-                        message.Draw(gfx);
                     }
+
+                    message.Draw(gfx);
                 }
             }
             if (dirty)

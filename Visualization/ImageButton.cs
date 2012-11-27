@@ -37,7 +37,7 @@ namespace Perceptual.Visualization
         protected bool active = true;
         protected bool selected = false;
         protected string name;
-        protected bool dynamicVisible = true;
+        protected bool dynamicVisible = false;
         protected bool highlight = false;
         protected bool enabled = true;
         protected Color4 tint = new Color4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -111,8 +111,8 @@ namespace Perceptual.Visualization
             }
         }
         protected int textureId = -1;
-        CLCalc.Program.Image2D image;
-        public CLCalc.Program.Image2D GetImageBuffer()
+        CLCalc.Program.Image2D image = null;
+        public CLCalc.Program.Image2D GetImage2D()
         {
             return image;
         }
@@ -120,6 +120,12 @@ namespace Perceptual.Visualization
         {
             this.textureId = textureId;
             this.image = image;
+            this.dynamicVisible=true;
+        }
+        public void SetDynamicImage(CLCalc.Program.Image2D image)
+        {
+            this.image = image;
+            this.dynamicVisible=true;
         }
         public ImageButton()
         {
@@ -196,16 +202,34 @@ namespace Perceptual.Visualization
                 GL.End();
 
                 GL.Color4(tint);
-                if (textureId >= 0 && dynamicVisible)
+                if ( dynamicVisible&&image!=null)
                 {
-                    GL.BindTexture(TextureTarget.Texture2D, textureId);
-                    GL.Begin(BeginMode.Quads);
-                    GL.TexCoord2(1.0f, 1.0f); GL.Vertex2(-width * 0.5f, height * 0.5f);
-                    GL.TexCoord2(0.0f, 1.0f); GL.Vertex2(width * 0.5f, height * 0.5f);
-                    GL.TexCoord2(0.0f, 0.0f); GL.Vertex2(width * 0.5f, -height * 0.5f);
-                    GL.TexCoord2(1.0f, 0.0f); GL.Vertex2(-width * 0.5f, -height * 0.5f);
-                    GL.End();
-                    GL.BindTexture(TextureTarget.Texture2D, 0);
+
+                    if (textureId >= 0 && image.CreatedFromGLBuffer)
+                    {
+                        GL.BindTexture(TextureTarget.Texture2D, textureId);
+                        GL.Begin(BeginMode.Quads);
+                        GL.TexCoord2(1.0f, 1.0f); GL.Vertex2(-width * 0.5f, height * 0.5f);
+                        GL.TexCoord2(0.0f, 1.0f); GL.Vertex2(width * 0.5f, height * 0.5f);
+                        GL.TexCoord2(0.0f, 0.0f); GL.Vertex2(width * 0.5f, -height * 0.5f);
+                        GL.TexCoord2(1.0f, 0.0f); GL.Vertex2(-width * 0.5f, -height * 0.5f);
+                        GL.End();
+                        GL.BindTexture(TextureTarget.Texture2D, 0);
+                    } else {
+                        image.ReadFromDeviceToBuffer();
+                        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)All.ClampToEdge);
+                        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)All.ClampToEdge);
+                        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)All.Linear);
+                        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)All.Linear);
+                        GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, image.Width,image.Height,
+                            0, OpenTK.Graphics.OpenGL.PixelFormat.Rgba, PixelType.Float, image.BackingBuffer);
+                        GL.Begin(BeginMode.Quads);
+                        GL.TexCoord2(1.0f, 1.0f); GL.Vertex2(-width * 0.5f, height * 0.5f);
+                        GL.TexCoord2(0.0f, 1.0f); GL.Vertex2(width * 0.5f, height * 0.5f);
+                        GL.TexCoord2(0.0f, 0.0f); GL.Vertex2(width * 0.5f, -height * 0.5f);
+                        GL.TexCoord2(1.0f, 0.0f); GL.Vertex2(-width * 0.5f, -height * 0.5f);
+                        GL.End();
+                    }
                 }
                 if (!enabled)
                 {
@@ -219,7 +243,7 @@ namespace Perceptual.Visualization
                 {
                     GL.Color3(1.0f, 1.0f, 1.0f);
                 }
-
+                
                 if (texture >= 0)
                 {
                     GL.BindTexture(TextureTarget.Texture2D, texture);

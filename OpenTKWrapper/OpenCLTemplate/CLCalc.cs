@@ -264,7 +264,7 @@ namespace OpenTKWrapper
             {
                 /// <summary>Size of data to be stored</summary>
                 public int VarSize;
-
+                public bool Dirty=true;
                 /// <summary>Original variable length</summary>
                 public int OriginalVarLength;
 
@@ -308,7 +308,7 @@ namespace OpenTKWrapper
                             throw new Exception("Attempting to use a variable created from OpenGL buffer without acquiring. Should use CLGLInteropFunctions to properly acquire and release these variables");
                         }
                     }
-
+                    this.Dirty = true;
                     Kernel.SetMemoryArgument(ArgIndex, VarPointer);
                 }
 
@@ -1016,6 +1016,7 @@ namespace OpenTKWrapper
             /// <summary>Image2D class. Uses channel type RGBA.</summary>
             public class Image2D : MemoryObject
             {
+                public float[] BackingBuffer;
                 /// <summary>Image width</summary>
                 private int width;
                 /// <summary>Image height</summary>
@@ -1054,6 +1055,7 @@ namespace OpenTKWrapper
                 /// <param name="Height">Image height.</param>
                 public Image2D(float[] Values, int Width, int Height)
                 {
+                    this.BackingBuffer = Values;
                     //Aloca memoria no contexto especificado
                     unsafe
                     {
@@ -1147,9 +1149,15 @@ namespace OpenTKWrapper
                 {
                     if (GLTextureBuffer <= 0) throw new Exception("Invalid OpenGL buffer");
                     //Mode = TextureTarget.Texture2D
-                    this.VarPointer = ComputeImage2D.CreateFromGLTexture2D(Program.Context, ComputeMemoryFlags.ReadWrite, 
-                        (int)OpenTK.Graphics.OpenGL.TextureTarget.Texture2D, 0, GLTextureBuffer);
-
+                    try
+                    {
+                        this.VarPointer = ComputeImage2D.CreateFromGLTexture2D(Program.Context, ComputeMemoryFlags.ReadWrite,
+                            (int)OpenTK.Graphics.OpenGL.TextureTarget.Texture2D, 0, GLTextureBuffer);
+                    }
+                    catch (InvalidValueComputeException e)
+                    {
+                        throw new Exception("Could not allocate GL buffer on compute device");
+                    }
                     ComputeImage2D img2d = (ComputeImage2D)this.VarPointer;
 
                     width = img2d.Width; height = img2d.Height;
@@ -1290,6 +1298,8 @@ namespace OpenTKWrapper
                 {
                     if (CreatedFromGLBuffer && (!AcquiredInOpenCL)) throw new Exception("Attempting to use a variable created from OpenGL buffer without acquiring. Should use CLGLInteropFunctions to properly acquire and release these variables");
                     CQ.Read((ComputeImage)VarPointer, BlockingRead, new SysIntX3(0, 0, 0), new SysIntX3(width, height, 1), 0, 0, new IntPtr(p), events);
+
+                    this.Dirty = false;
                 }
 
                 /// <summary>Reads variable from device.</summary>
@@ -1309,8 +1319,19 @@ namespace OpenTKWrapper
                             ReadFromDeviceTo(ponteiro, CQ, BlockingRead, events);
                         }
                     }
-                }
 
+                    this.Dirty = false;
+                }
+                public void ReadFromDeviceToBuffer()
+                {
+                    if (Dirty)
+                    {
+                        //CLEvent Event = new CLEvent();
+                        ReadFromDeviceTo(BackingBuffer, CommQueues[DefaultCQ], true, null);
+                    }
+                    this.Dirty = false;
+                    //OpenCLDriver.clReleaseEvent(Event);
+                }
                 /// <summary>Reads variable from device. Does not return until data has been copied.</summary>
                 /// <param name="Values">Values to store data coming from device</param>
                 public void ReadFromDeviceTo(float[] Values)
@@ -1318,6 +1339,7 @@ namespace OpenTKWrapper
                     //CLEvent Event = new CLEvent();
                     ReadFromDeviceTo(Values, CommQueues[DefaultCQ], true, null);
 
+                    this.Dirty = false;
                     //OpenCLDriver.clReleaseEvent(Event);
                 }
 
@@ -1337,6 +1359,8 @@ namespace OpenTKWrapper
                             ReadFromDeviceTo(ponteiro, CQ, BlockingRead, events);
                         }
                     }
+
+                    this.Dirty = false;
                 }
 
                 /// <summary>Reads variable from device. Does not return until data has been copied.</summary>
@@ -1346,6 +1370,7 @@ namespace OpenTKWrapper
                     //CLEvent Event = new CLEvent();
                     ReadFromDeviceTo(Values, CommQueues[DefaultCQ], true, null);
 
+                    this.Dirty = false;
                     //OpenCLDriver.clReleaseEvent(Event);
                 }
 
@@ -1366,6 +1391,8 @@ namespace OpenTKWrapper
                             ReadFromDeviceTo(ponteiro, CQ, BlockingRead, events);
                         }
                     }
+
+                    this.Dirty = false;
                 }
 
                 /// <summary>Reads variable from device. Does not return until data has been copied.</summary>
@@ -1375,6 +1402,7 @@ namespace OpenTKWrapper
                     //CLEvent Event = new CLEvent();
                     ReadFromDeviceTo(Values, CommQueues[DefaultCQ], true, null);
 
+                    this.Dirty = false;
                     //OpenCLDriver.clReleaseEvent(Event);
                 }
 
@@ -1398,7 +1426,8 @@ namespace OpenTKWrapper
 
 
                     bmp.UnlockBits(bitmapdata);
-
+                    
+                    this.Dirty = false;
                     return bmp;
                 }
 
@@ -1445,8 +1474,20 @@ namespace OpenTKWrapper
                     //if (Variables.Length != nArgs) throw new Exception("Wrong number of arguments");
                     //if (Vars != Variables){
                         //Vars = Variables;
+                    bool hasNoValueType = false;
                         for (int i = 0; i < Variables.Length; i++)
                         {
+                            if (Variables[i] is CLCalc.Program.Variable || Variables[i] is CLCalc.Program.Image2D)
+                            {
+                                hasNoValueType = true;
+                            }
+                            else
+                            {
+                                if (hasNoValueType)
+                                {
+                                    throw new Exception("Value type follows Variable or Image2D type in list of arguments! "+Variables[i].GetType()+" in "+this.kernel.FunctionName+"()");
+                                }
+                            }
                             Variables[i].SetAsArgument(i, kernel);
                         }
                     //}
@@ -1509,7 +1550,6 @@ namespace OpenTKWrapper
                         wOffSet = new long[WorkOffSet.Length];
                         for (int i = 0; i < wOffSet.Length; i++) wOffSet[i] = WorkOffSet[i];
                     }
-
                     CQ.Execute(kernel, wOffSet, globWSize, locWSize, events);
 
                 }

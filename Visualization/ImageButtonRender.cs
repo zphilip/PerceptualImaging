@@ -25,24 +25,20 @@ namespace Perceptual.Visualization
 
         protected int initScreenWidth, initScreenHeight;
         protected float scaleX = 1, scaleY = 1;
+        GLAdvancedRender glw;
         public virtual void Initialize(BaseCameraApplication app, GLAdvancedRender glw)
         {
             initScreenWidth = glw.GLCtrl.Width;
             initScreenHeight = glw.GLCtrl.Height;
+            this.glw = glw;
         }
         public bool Visible = true;
         public virtual void Draw(GLAdvancedRender glw)
         {
             scaleX = initScreenWidth / (float)glw.GLCtrl.Width;
             scaleY = initScreenHeight / (float)glw.GLCtrl.Height;
-            if (current != null)
-            {
-                glw.GLCtrl.Cursor = System.Windows.Forms.Cursors.Hand;
-            }
-            else
-            {
-                glw.GLCtrl.Cursor = System.Windows.Forms.Cursors.Arrow;
-            }
+
+
             if (Visible)
             {
                 lock (this)
@@ -89,14 +85,27 @@ namespace Perceptual.Visualization
                         }
                         current = null;
                     }
+                    if (current != null)
+                    {
+                        glw.GLCtrl.Cursor = System.Windows.Forms.Cursors.Hand;
+                    }
+                    else
+                    {
+                        glw.GLCtrl.Cursor = System.Windows.Forms.Cursors.Arrow;
+                    }
                     return (current != null);
                 }
+            }
+            else
+            {
+
+                glw.GLCtrl.Cursor = System.Windows.Forms.Cursors.Arrow;
             }
             return false;
         }
         public bool ProcessMouseButton(bool mouseDown)
         {
-            
+
             if (Visible)
             {
                 lock (this)
