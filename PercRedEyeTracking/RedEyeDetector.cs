@@ -95,7 +95,7 @@ namespace Perceptual.RedEye
                 System.Console.WriteLine(ex.Message);
                 Environment.Exit(1);
             }
-            irImageBuffer = CLCalc.Program.Variable.Create(new ComputeBuffer<byte>(CLCalc.Program.Context, ComputeMemoryFlags.ReadWrite, ir = new byte[width * height]));
+            irImageBuffer = CLCalc.Program.Variable.Create(new ComputeBuffer<byte>(CLCalc.Program.Context, ComputeMemoryFlags.ReadWrite | ComputeMemoryFlags.CopyHostPointer, ir = new byte[width * height]));
             kernelCopyIRImage = new CLCalc.Program.Kernel("CopyIRImage");
             kernelFindFaceLandmarks = new CLCalc.Program.Kernel("FindFaceLandmarks");
         }
@@ -117,7 +117,7 @@ kernel void CopyIRImage(global float4* depthData,global uchar* irImage)
 	irImage[gid]=clamp((int)(255.0f*(ir-100)/1000.0f),0,255);
 
 }
-kernel void FindFaceLandmarks(int2 rightEye,int2 leftEye,int4 boundingBox,global image2d_t depthImage,global FaceDetection* face)
+kernel void FindFaceLandmarks(int2 rightEye,int2 leftEye,int4 boundingBox,global FaceDetection* face,read_only image2d_t depthImage)
 {
 
 	const sampler_t smp = CLK_NORMALIZED_COORDS_FALSE | CLK_ADDRESS_CLAMP_TO_EDGE | CLK_FILTER_LINEAR;
@@ -252,7 +252,7 @@ kernel void FindFaceLandmarks(int2 rightEye,int2 leftEye,int4 boundingBox,global
                     leftEye2D = new int2(left.X + face.X, left.Y + face.Y);
                     boundingBox2D = new int4(face.X, face.Y, face.Width, face.Height);
                     //Find bridge and nose. This was done in opencl to leverage read_imagef.
-                    kernelFindFaceLandmarks.Execute(new CLCalc.Program.MemoryObject[] { rightEye2D, leftEye2D, boundingBox2D, filter.GetDepthImage(), faceDetectionBuffer }, 1);
+                    kernelFindFaceLandmarks.Execute(new CLCalc.Program.MemoryObject[] { rightEye2D, leftEye2D, boundingBox2D, faceDetectionBuffer, filter.GetDepthImage() }, 1);
                     ReadFaceLandmarksFromBuffer();
                     foundFace = true;
                 }
