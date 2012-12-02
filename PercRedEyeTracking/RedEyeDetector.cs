@@ -28,6 +28,7 @@ namespace Perceptual.RedEye
 {
     public struct FaceLandmarks
     {
+
         public int4 boundingBox2D;
         public float4 rightEye;
         public float4 leftEye;
