@@ -1,0 +1,5 @@
+C:\Users\bclucas\Documents\GitHub\PerceptualImaging\GifMaker\bin\Debug\Gif.Components.dll
+C:\Users\bclucas\Documents\GitHub\PerceptualImaging\GifMaker\bin\Debug\Gif.Components.pdb
+C:\Users\bclucas\Documents\GitHub\PerceptualImaging\GifMaker\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\bclucas\Documents\GitHub\PerceptualImaging\GifMaker\obj\Debug\Gif.Components.dll
+C:\Users\bclucas\Documents\GitHub\PerceptualImaging\GifMaker\obj\Debug\Gif.Components.pdb

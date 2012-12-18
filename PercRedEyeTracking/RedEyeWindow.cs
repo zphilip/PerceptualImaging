@@ -29,8 +29,8 @@ namespace Perceptual.RedEye
         }
         protected override bool Setup()
         {
-            devices.Add(new GestureCamera(@"."));
-            //devices.Add(new PlayBackDevice(@"C:\Users\Blake\Desktop\capture_head_turn"));
+            //devices.Add(new GestureCamera(@"."));
+            devices.Add(new PlayBackDevice(@"C:\Users\PerC\Desktop\capture"));
             AdaptiveTemporalFilter filter;
             RedEyeDetector detector;
             processors.Add(detector = new RedEyeDetector());

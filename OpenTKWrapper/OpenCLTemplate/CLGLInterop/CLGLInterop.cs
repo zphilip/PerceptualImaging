@@ -124,7 +124,7 @@ namespace OpenTKWrapper.CLGLInterop
 
             OpenTK.Graphics.ColorFormat cf = new OpenTK.Graphics.ColorFormat();
             OpenTK.Graphics.GraphicsMode gm =
-                new OpenTK.Graphics.GraphicsMode(32, 24, 8, 4, cf, 4, true);
+                new OpenTK.Graphics.GraphicsMode(32, 24, 8, 4, cf, 4, false);
 
             this.GLCtrl = new OpenTK.GLControl(gm);
             ParentForm.Controls.Add(GLCtrl);

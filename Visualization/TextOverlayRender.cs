@@ -34,9 +34,21 @@ namespace Perceptual.Visualization
         public Message(string text, int x, int y, int sz)
         {
             this.text = text;
-            this.font = new Font("Arial", sz);
+            this.font = new Font("Arial", sz, System.Drawing.FontStyle.Bold);
             this.location = new PointF(x, y);
             brush = new SolidBrush(Color.White);
+        }
+        public Message(string text, int sz)
+        {
+            this.text = text;
+            this.font = new Font("Arial", sz,System.Drawing.FontStyle.Bold);
+            this.location = new PointF(0, 0);
+            brush = new SolidBrush(Color.White);
+        }
+        public void SetColor(Color4 color)
+        {
+            brush = new SolidBrush(Color.FromArgb(color.ToArgb()));
+            dirty = true;
         }
         public bool isVisible()
         {
@@ -85,7 +97,8 @@ namespace Perceptual.Visualization
 
                 foreach (Message message in Messages)
                 {
-                    if (message.isDirty()){
+                    if (message.isDirty())
+                    {
                         dirty = true;
                     }
 

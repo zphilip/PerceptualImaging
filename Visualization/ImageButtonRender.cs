@@ -19,12 +19,14 @@ using OpenTKWrapper.CLGLInterop;
 
 namespace Perceptual.Visualization
 {
-    public abstract class ImageButtonRender : PercRender
+    public class ImageButtonRender : PercRender
     {
         public List<ImageButton> Buttons = new List<ImageButton>();
 
         protected int initScreenWidth, initScreenHeight;
         protected float scaleX = 1, scaleY = 1;
+        protected int xOffset = 0, yOffset = 0;
+        protected int xOld, yOld;
         GLAdvancedRender glw;
         public virtual void Initialize(BaseCameraApplication app, GLAdvancedRender glw)
         {
@@ -50,6 +52,7 @@ namespace Perceptual.Visualization
                 }
             }
         }
+        protected bool mouseDown = false;
         protected ImageButton current = null;
         protected ImageButton selected = null;
         public bool ProcessMouseMove(int xpos, int ypos)
@@ -85,22 +88,36 @@ namespace Perceptual.Visualization
                         }
                         current = null;
                     }
-                    if (current != null)
+                    if (glw != null)
                     {
-                        glw.GLCtrl.Cursor = System.Windows.Forms.Cursors.Hand;
+                        if (current != null)
+                        {
+                            glw.GLCtrl.Cursor = System.Windows.Forms.Cursors.Hand;
+                        }
+                        else
+                        {
+                            glw.GLCtrl.Cursor = System.Windows.Forms.Cursors.Arrow;
+                        }
                     }
-                    else
+                    if (selected != null && selected.isDragEnabled())
                     {
-                        glw.GLCtrl.Cursor = System.Windows.Forms.Cursors.Arrow;
+                        int2 clamped = selected.ClampPosition(xpos - xOffset, ypos - yOffset);
+                        xpos = ypos - clamped.x;
+                        ypos = ypos - clamped.y;
+                        selected.xpos = clamped.x;
+                        selected.ypos = clamped.y;
                     }
+                    xOld = xpos;
+                    yOld = ypos;
                     return (current != null);
                 }
             }
             else
             {
-
                 glw.GLCtrl.Cursor = System.Windows.Forms.Cursors.Arrow;
             }
+            xOld = xpos;
+            yOld = ypos;
             return false;
         }
         public bool ProcessMouseButton(bool mouseDown)
@@ -116,6 +133,8 @@ namespace Perceptual.Visualization
                         {
                             current.SetSelected(true);
                             selected = current;
+                            xOffset = xOld - current.xpos;
+                            yOffset = yOld - current.ypos;
                             return true;
                         }
                     }
@@ -124,6 +143,7 @@ namespace Perceptual.Visualization
                         if (selected != null)
                         {
                             selected.SetSelected(false);
+                            selected = null;
                             return true;
                         }
                     }
@@ -131,7 +151,9 @@ namespace Perceptual.Visualization
             }
             return false;
         }
-        public abstract void Process(BaseCameraApplication app);
+        public virtual void Process(BaseCameraApplication app)
+        {
+        }
 
 
     }

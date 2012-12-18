@@ -27,13 +27,45 @@ namespace Perceptual.Foundation
         protected string[] textureFiles;
         protected string[] faceFiles;
         protected int numFrames = 0;
+        public void SetDepthFrame(DepthCameraFrame frame){
+            this.depthFrame=frame;
+        }
+        public void SetColorFrame(ColorCameraFrame frame)
+        {
+            this.colorFrame = frame;
+        }
+        public void SetTextureFrame(TextureMapFrame frame)
+        {
+            this.textureFrame = frame;
+        }
         public PlayBackDevice(string inputDirectory):base(inputDirectory){
             this.inputDirectory = inputDirectory;
-            this.focalX = 224.502f;
-            this.focalY = 230.494f;
-            this.centerX = 160;
-            this.centerY = 120;
+            GestureCamera device = new GestureCamera(inputDirectory);
+            this.focalX = device.GetFocalLengthX();
+            this.focalY = device.GetFocalLengthY();
+            this.centerX = device.GetCameraCenterX();
+            this.centerY = device.GetCameraCenterY();
+            this.minDepth = device.GetMinDepth();
+            this.maxDepth = device.GetMaxDepth();
+            this.minIR = device.GetMinIR();
+            this.bbox = device.GetBoundingBox();
+            this.GroundPlane = device.GetGroundPlane();
 
+            bbox = new BoundingBox(new float4(-300, -250, 250, 1), new float4(300, 250, 650, 1));
+        }
+        public PlayBackDevice(CameraDevice device, string  inputDirectory)
+            : base(inputDirectory)
+        {
+            this.inputDirectory = inputDirectory;
+            this.focalX = device.GetFocalLengthX();
+            this.focalY = device.GetFocalLengthY();
+            this.centerX = device.GetCameraCenterX();
+            this.centerY = device.GetCameraCenterY();
+            this.minDepth = device.GetMinDepth();
+            this.maxDepth = device.GetMaxDepth();
+            this.minIR = device.GetMinIR();
+            this.bbox = device.GetBoundingBox();
+            bbox = new BoundingBox(new float4(-300, -250, 250, 1), new float4(300, 250, 650, 1));
         }
         public override bool Initialize()
         {
@@ -42,7 +74,7 @@ namespace Perceptual.Foundation
             textureFiles = Directory.GetFiles(inputDirectory, "*.texture");
             faceFiles = Directory.GetFiles(inputDirectory, "*.face");
             numFrames=Math.Max(Math.Max(depthFiles.Length,colorFiles.Length),textureFiles.Length);
-            return (numFrames>0);
+            return true;
         }
         public override void Dispose()
         {

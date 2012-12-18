@@ -159,7 +159,7 @@ namespace Perceptual.Visualization
                 DepthCameraFrame depthFrame = app.GetPrimaryDevice().GetDepthImage();
                 ColorCameraFrame colorFrame = app.GetPrimaryDevice().GetColorImage();
                 TextureMapFrame textureFrame = app.GetPrimaryDevice().GetTextureImage();
-                AdaptiveTemporalFilter filter = (AdaptiveTemporalFilter)app.GetImageFilter();
+                CameraDataFilter filter = (CameraDataFilter)app.GetImageFilter();
                 CLGLInteropFunctions.AcquireGLElements(new CLCalc.Program.MemoryObject[] { positionBuffer, colorBuffer, normalBuffer });
                 CLCalc.Program.MemoryObject[] args = new CLCalc.Program.MemoryObject[] { 
                  app.GetPrimaryDevice().GetBoundingBox(),filter.GetDepthImage(),filter.GetTextureImage(),colorFrame.GetMemoryObject(),positionBuffer,colorBuffer,normalBuffer};

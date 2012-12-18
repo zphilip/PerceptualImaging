@@ -29,10 +29,10 @@ namespace Perceptual.Visualization
     }
     public class ImageButton
     {
-        protected Bitmap bitmap;
+        public Bitmap bitmap;
         protected bool rollover = false;
         protected int texture = -1;
-        protected int xpos, ypos, width, height;
+        public int xpos, ypos, width, height;
         protected bool visible = true;
         protected bool active = true;
         protected bool selected = false;
@@ -40,15 +40,35 @@ namespace Perceptual.Visualization
         protected bool dynamicVisible = false;
         protected bool highlight = false;
         protected bool enabled = true;
+        protected bool dragAndDrop = false;
+        protected Color4 selectedColor = new Color4(1, 1, 1, -1);
+        public int minX = -1, minY = -1, maxX = -1, maxY = -1;
         protected Color4 tint = new Color4(1.0f, 1.0f, 1.0f, 1.0f);
         protected Color4 bgColor = new Color4(1.0f, 1.0f, 1.0f, 0.0f);
+        protected Color4 fgColor = new Color4(1.0f, 1.0f, 1.0f, 1.0f);
         public void SetTint(Color4 c)
         {
             this.tint = c;
         }
-        public void SetBackground(Color4 c)
+        public void SetSelectedColor(Color4 c)
+        {
+            this.selectedColor = c;
+        }
+        public void SetBackgroundColor(Color4 c)
         {
             this.bgColor = c;
+        }
+        public void SetForegroundColor(Color4 c)
+        {
+            this.fgColor = c;
+        }
+        public Color4 GetForegroundColor()
+        {
+            return fgColor;
+        }
+        public Color4 GetBackgroundColor()
+        {
+            return bgColor;
         }
         public int2 GetLocation()
         {
@@ -57,6 +77,24 @@ namespace Perceptual.Visualization
         public int2 GetSize()
         {
             return new int2(width, height);
+        }
+        public void SetDragBoundingBox(int minx, int miny, int maxx, int maxy)
+        {
+            this.minX = minx;
+            this.minY = miny;
+            this.maxX = maxx;
+            this.maxY = maxy;
+        }
+        public int2 ClampPosition(int x, int y)
+        {
+            if (minX < 0 || minY < 0 || maxX < 0 || maxY < 0)
+            {
+                return new int2(x, y);
+            }
+            else
+            {
+                return new int2(Math.Max(minX, Math.Min(x, maxX)), Math.Max(minY, Math.Min(y, maxY)));
+            }
         }
         protected List<ImageButtonObserver> observers = new List<ImageButtonObserver>();
         public void AddObserver(ImageButtonObserver observer)
@@ -83,10 +121,22 @@ namespace Perceptual.Visualization
         {
             this.enabled = enabled;
         }
+        public void SetDragAndDrop(bool dnd)
+        {
+            this.dragAndDrop = dnd;
+        }
+        public bool isDragEnabled()
+        {
+            return dragAndDrop;
+        }
+        public bool isSelected()
+        {
+            return selected;
+        }
         public void SetSelected(bool selected)
         {
 
-            if (this.selected == false && selected == true)
+            if (this.selected == true && selected == false)
             {
                 foreach (ImageButtonObserver observer in observers)
                 {
@@ -120,14 +170,33 @@ namespace Perceptual.Visualization
         {
             this.textureId = textureId;
             this.image = image;
-            this.dynamicVisible=true;
+            this.dynamicVisible = true;
         }
         public void SetDynamicImage(CLCalc.Program.Image2D image)
         {
             this.image = image;
-            this.dynamicVisible=true;
+            this.dynamicVisible = true;
         }
         public ImageButton()
+        {
+        }
+        public void UpdateBitmap()
+        {
+            GL.BindTexture(TextureTarget.Texture2D, texture);
+            System.Drawing.Rectangle rect = new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height);
+            System.Drawing.Imaging.BitmapData bitmapdata = bitmap.LockBits(rect, System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)All.ClampToEdge);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)All.ClampToEdge);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)All.Linear);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)All.Linear);
+            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, bitmap.Width, bitmap.Height,
+                0, OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, bitmapdata.Scan0);
+            bitmap.UnlockBits(bitmapdata);
+            GL.BindTexture(TextureTarget.Texture2D, 0);
+            GL.Disable(EnableCap.Texture2D);
+        }
+        public ImageButton(string name, bool active, int xpos, int ypos, int width, int height)
+            : this(name, null, active, xpos, ypos, width, height)
         {
         }
         public ImageButton(string name, Bitmap staticImage, bool active, int xpos, int ypos, int width, int height)
@@ -147,18 +216,7 @@ namespace Perceptual.Visualization
 
                 if (texture != -1)
                 {
-                    GL.BindTexture(TextureTarget.Texture2D, texture);
-                    System.Drawing.Rectangle rect = new System.Drawing.Rectangle(0, 0, staticImage.Width, staticImage.Height);
-                    System.Drawing.Imaging.BitmapData bitmapdata = staticImage.LockBits(rect, System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-                    GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)All.ClampToEdge);
-                    GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)All.ClampToEdge);
-                    GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)All.Linear);
-                    GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)All.Linear);
-                    GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, staticImage.Width, staticImage.Height,
-                        0, OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, bitmapdata.Scan0);
-                    staticImage.UnlockBits(bitmapdata);
-                    GL.BindTexture(TextureTarget.Texture2D, 0);
-                    GL.Disable(EnableCap.Texture2D);
+                    UpdateBitmap();
                 }
                 else
                 {
@@ -179,7 +237,6 @@ namespace Perceptual.Visualization
         {
             if (visible)
             {
-                GL.Enable(EnableCap.Texture2D);
                 GL.PushMatrix();
 
                 GL.Translate(xpos + width * 0.5f, ypos + height * 0.5f, 0);
@@ -192,8 +249,11 @@ namespace Perceptual.Visualization
                 {
                     GL.Scale(0.9f, 0.9f, 1);
                 }
+                GL.Disable(EnableCap.Lighting);
+                GL.Hint(HintTarget.PolygonSmoothHint, HintMode.Nicest);
+                GL.Disable(EnableCap.Texture2D);
                 GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
-                GL.Color4(bgColor);
+                GL.Color4((selected && selectedColor.A > 0) ? selectedColor : bgColor);
                 GL.Begin(BeginMode.Quads);
                 GL.Vertex2(-width * 0.5f, height * 0.5f);
                 GL.Vertex2(width * 0.5f, height * 0.5f);
@@ -201,8 +261,10 @@ namespace Perceptual.Visualization
                 GL.Vertex2(-width * 0.5f, -height * 0.5f);
                 GL.End();
 
+
+                GL.Enable(EnableCap.Texture2D);
                 GL.Color4(tint);
-                if ( dynamicVisible&&image!=null)
+                if (dynamicVisible && image != null)
                 {
 
                     if (textureId >= 0 && image.CreatedFromGLBuffer)
@@ -215,13 +277,15 @@ namespace Perceptual.Visualization
                         GL.TexCoord2(1.0f, 0.0f); GL.Vertex2(-width * 0.5f, -height * 0.5f);
                         GL.End();
                         GL.BindTexture(TextureTarget.Texture2D, 0);
-                    } else {
+                    }
+                    else
+                    {
                         image.ReadFromDeviceToBuffer();
                         GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)All.ClampToEdge);
                         GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)All.ClampToEdge);
                         GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)All.Linear);
                         GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)All.Linear);
-                        GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, image.Width,image.Height,
+                        GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, image.Width, image.Height,
                             0, OpenTK.Graphics.OpenGL.PixelFormat.Rgba, PixelType.Float, image.BackingBuffer);
                         GL.Begin(BeginMode.Quads);
                         GL.TexCoord2(1.0f, 1.0f); GL.Vertex2(-width * 0.5f, height * 0.5f);
@@ -241,9 +305,9 @@ namespace Perceptual.Visualization
                 }
                 else
                 {
-                    GL.Color3(1.0f, 1.0f, 1.0f);
+                    GL.Color4(fgColor);
                 }
-                
+
                 if (texture >= 0)
                 {
                     GL.BindTexture(TextureTarget.Texture2D, texture);
@@ -260,7 +324,7 @@ namespace Perceptual.Visualization
                 GL.PopMatrix();
 
                 GL.Disable(EnableCap.Texture2D);
-
+                GL.Enable(EnableCap.Lighting);
                 GL.Color3(1.0f, 1.0f, 1.0f);
             }
         }

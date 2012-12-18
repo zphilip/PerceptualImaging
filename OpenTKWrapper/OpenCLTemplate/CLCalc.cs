@@ -226,7 +226,7 @@ namespace OpenTKWrapper
                         Prog.Build(CLCalc.CLDevices, "", null, IntPtr.Zero);
                         funcionou = true;
                     }
-                    catch(BuildProgramFailureComputeException e)
+                    catch (BuildProgramFailureComputeException e)
                     {
                         System.Console.WriteLine(e.Message);
                         System.Console.Write(Prog.GetBuildLog(CLCalc.CLDevices[i]));
@@ -264,14 +264,14 @@ namespace OpenTKWrapper
             {
                 /// <summary>Size of data to be stored</summary>
                 public int VarSize;
-                public bool Dirty=true;
+                public bool Dirty = true;
                 /// <summary>Original variable length</summary>
                 public int OriginalVarLength;
 
                 /// <summary>Handle to memory object</summary>
                 public ComputeMemory VarPointer;
 
-                
+
                 /// <summary>Returns the size of the stored variable</summary>
                 public int Size
                 {
@@ -337,14 +337,15 @@ namespace OpenTKWrapper
                 #endregion
             }
             /// <summary>Value class</summary>
-            public class Value<T> : MemoryObject where T:struct
+            public class Value<T> : MemoryObject where T : struct
             {
                 public T value;
                 public Value()
                 {
                 }
-                public Value(T value){
-                    this.value=value;
+                public Value(T value)
+                {
+                    this.value = value;
                 }
                 public override void SetAsArgument(int ArgIndex, ComputeKernel Kernel)
                 {
@@ -715,7 +716,7 @@ namespace OpenTKWrapper
                 /// <param name="CQ">Command queue to use</param>
                 /// <param name="BlockingWrite">TRUE to return only after completed writing.</param>
                 /// <param name="events">OpenCL Event associated to this operation</param>
-                 
+
                 public void WriteToDevice(char[] Values, ComputeCommandQueue CQ, bool BlockingWrite, ICollection<ComputeEventBase> events)
                 {
                     if (Values.Length != OriginalVarLength) throw new Exception("Values length should be the same as allocated length");
@@ -743,7 +744,7 @@ namespace OpenTKWrapper
                 /// <param name="CQ">Command queue to use</param>
                 /// <param name="BlockingWrite">TRUE to return only after completed writing.</param>
                 /// <param name="events">OpenCL Event associated to this operation</param>
-                 
+
                 public void WriteToDevice(byte[] Values, ComputeCommandQueue CQ, bool BlockingWrite, ICollection<ComputeEventBase> events)
                 {
                     if (Values.Length != OriginalVarLength) throw new Exception("Values length should be the same as allocated length");
@@ -786,10 +787,10 @@ namespace OpenTKWrapper
                 /// <param name="CQ">Command queue to use</param>
                 /// <param name="BlockingRead">TRUE to return only after completed reading.</param>
                 /// <param name="events">OpenCL Event associated with this operation</param>
-                 
+
                 public void ReadFromDeviceTo(float[] Values, ComputeCommandQueue CQ, bool BlockingRead, ICollection<ComputeEventBase> events)
                 {
-                    if (Values.Length != OriginalVarLength) throw new Exception("Values length should be the same as allocated length. Current: "+Values.Length+" Original: "+OriginalVarLength);
+                    if (Values.Length != OriginalVarLength) throw new Exception("Values length should be the same as allocated length. Current: " + Values.Length + " Original: " + OriginalVarLength);
                     if (CreatedFromGLBuffer && (!AcquiredInOpenCL)) throw new Exception("Attempting to use a variable created from OpenGL buffer without acquiring. Should use CLGLInteropFunctions to properly acquire and release these variables");
                     unsafe
                     {
@@ -899,7 +900,7 @@ namespace OpenTKWrapper
                 /// <param name="CQ">Command queue to use</param>
                 /// <param name="BlockingRead">TRUE to return only after completed reading.</param>
                 /// <param name="events">OpenCL Event associated with this operation</param>
-                 
+
                 public void ReadFromDeviceTo(long[] Values, ComputeCommandQueue CQ, bool BlockingRead, ICollection<ComputeEventBase> events)
                 {
                     if (Values.Length != OriginalVarLength) throw new Exception("Values length should be the same as allocated length");
@@ -928,7 +929,7 @@ namespace OpenTKWrapper
                 /// <param name="CQ">Command queue to use</param>
                 /// <param name="BlockingRead">TRUE to return only after completed reading.</param>
                 /// <param name="events">OpenCL Event associated with this operation</param>
-                 
+
                 public void ReadFromDeviceTo(double[] Values, ComputeCommandQueue CQ, bool BlockingRead, ICollection<ComputeEventBase> events)
                 {
                     if (Values.Length != OriginalVarLength) throw new Exception("Values length should be the same as allocated length");
@@ -1048,7 +1049,7 @@ namespace OpenTKWrapper
                     VarPointer = new ComputeImage2D(Program.Context, ComputeMemoryFlags.ReadWrite | ComputeMemoryFlags.CopyHostPointer, format, width, height, 0, new IntPtr(p));
 
                 }
-                
+
                 /// <summary>Constructor.</summary>
                 /// <param name="Values">Variable whose size will be allocated in device memory.</param>
                 /// <param name="Width">Image width.</param>
@@ -1209,7 +1210,7 @@ namespace OpenTKWrapper
                 /// <param name="CQ">Command queue to use</param>
                 /// <param name="BlockingWrite">TRUE to return only after completed writing.</param>
                 /// <param name="events">OpenCL Event associated to this operation</param>
-                 
+
                 public void WriteToDevice(int[] Values, ComputeCommandQueue CQ, bool BlockingWrite, ICollection<ComputeEventBase> events)
                 {
                     if (Values.Length != OriginalVarLength) throw new Exception("Values length should be the same as allocated length");
@@ -1236,7 +1237,7 @@ namespace OpenTKWrapper
                 /// <param name="CQ">Command queue to use</param>
                 /// <param name="BlockingWrite">TRUE to return only after completed writing.</param>
                 /// <param name="events">OpenCL Event associated to this operation</param>
-                 
+
                 public void WriteToDevice(byte[] Values, ComputeCommandQueue CQ, bool BlockingWrite, ICollection<ComputeEventBase> events)
                 {
                     if (Values.Length != OriginalVarLength) throw new Exception("Values length should be the same as allocated length");
@@ -1285,7 +1286,7 @@ namespace OpenTKWrapper
                 public void WriteBitmap(System.Drawing.Bitmap bmp)
                 {
                     //CLEvent Event = new CLEvent();
-                    WriteBitmap(bmp, CommQueues[DefaultCQ],true, null);
+                    WriteBitmap(bmp, CommQueues[DefaultCQ], true, null);
 
                     //OpenCLDriver.clReleaseEvent(Event);
                 }
@@ -1307,7 +1308,7 @@ namespace OpenTKWrapper
                 /// <param name="CQ">Command queue to use</param>
                 /// <param name="BlockingRead">TRUE to return only after completed reading.</param>
                 /// <param name="events">OpenCL Event associated with this operation</param>
-                 
+
                 public void ReadFromDeviceTo(float[] Values, ComputeCommandQueue CQ, bool BlockingRead, ICollection<ComputeEventBase> events)
                 {
                     if (Values.Length != OriginalVarLength) throw new Exception("Values length should be the same as allocated length");
@@ -1379,7 +1380,7 @@ namespace OpenTKWrapper
                 /// <param name="CQ">Command queue to use</param>
                 /// <param name="BlockingRead">TRUE to return only after completed reading.</param>
                 /// <param name="events">OpenCL Event associated with this operation</param>
-                 
+
                 public void ReadFromDeviceTo(byte[] Values, ComputeCommandQueue CQ, bool BlockingRead, ICollection<ComputeEventBase> events)
                 {
                     if (Values.Length != OriginalVarLength) throw new Exception("Values length should be the same as allocated length");
@@ -1410,7 +1411,7 @@ namespace OpenTKWrapper
                 /// <param name="CQ">Command queue to use</param>
                 /// <param name="BlockingRead">TRUE to return only after completed reading.</param>
                 /// <param name="events">OpenCL Event associated with this operation</param>
-                 
+
                 public System.Drawing.Bitmap ReadBitmap(ComputeCommandQueue CQ, bool BlockingRead, ICollection<ComputeEventBase> events)
                 {
                     System.Drawing.Bitmap bmp = new System.Drawing.Bitmap(width, height);
@@ -1426,7 +1427,7 @@ namespace OpenTKWrapper
 
 
                     bmp.UnlockBits(bitmapdata);
-                    
+
                     this.Dirty = false;
                     return bmp;
                 }
@@ -1444,6 +1445,281 @@ namespace OpenTKWrapper
 
             }
 
+
+            /////BEGIN IMAGE 3D
+            /// <summary>Image2D class. Uses channel type RGBA.</summary>
+            public class Image3D : MemoryObject
+            {
+                public float[] BackingBuffer;
+                /// <summary>Image width</summary>
+                private int rows;
+                /// <summary>Image height</summary>
+                private int cols;
+                private int slices;
+                /// <summary>Gets image2D width</summary>
+                public int Rows
+                {
+                    get { return rows; }
+                }
+
+                /// <summary>Gets image2D height</summary>
+                public int Cols
+                {
+                    get { return cols; }
+                }
+                public int Slices
+                {
+                    get { return slices; }
+                }
+                #region Constructor. float[], int[], byte[], from Bitmap, from OpenGL Texture
+
+                /// <summary>Unsafe allocation of memory</summary>
+                /// <param name="p">Pointer to data</param>
+                /// <param name="DataType">Data type: float, uint8 (byte), int32, etc.</param>
+                private unsafe void CLMalloc(void* p, ComputeImageChannelType DataType)
+                {
+                    ComputeImageFormat format = new ComputeImageFormat(ComputeImageChannelOrder.Rgba, DataType);
+
+                    if (OriginalVarLength != 4 * rows * cols * slices) throw new Exception("Vector length should be 4*width*height");
+
+                    VarPointer = new ComputeImage3D(Program.Context, ComputeMemoryFlags.ReadWrite | ComputeMemoryFlags.CopyHostPointer, format, rows, cols, slices, 0, 0, new IntPtr(p));
+
+                }
+
+                /// <summary>Constructor.</summary>
+                /// <param name="Values">Variable whose size will be allocated in device memory.</param>
+                /// <param name="Width">Image width.</param>
+                /// <param name="Height">Image height.</param>
+                public Image3D(float[] Values, int rows, int cols, int slices)
+                {
+                    this.BackingBuffer = Values;
+                    //Aloca memoria no contexto especificado
+                    unsafe
+                    {
+                        ComputeImageChannelType DataType = ComputeImageChannelType.Float;
+                        VarSize = Values.Length * sizeof(float);
+                        this.rows = rows;
+                        this.cols = cols;
+                        this.slices = slices;
+                        OriginalVarLength = Values.Length;
+
+                        fixed (void* ponteiro = Values)
+                        {
+                            CLMalloc(ponteiro, DataType);
+                        }
+                    }
+                }
+
+                #endregion
+
+                #region Write to Device memory. float[], int[], byte[], Bitmap
+
+
+                private unsafe void WriteToDevice(void* p, ComputeCommandQueue CQ, bool BlockingWrite, ICollection<ComputeEventBase> events)
+                {
+                    if (CreatedFromGLBuffer && (!AcquiredInOpenCL)) throw new Exception("Attempting to use a variable created from OpenGL buffer without acquiring. Should use CLGLInteropFunctions to properly acquire and release these variables");
+                    CQ.Write((ComputeImage)VarPointer, BlockingWrite, new SysIntX3(0, 0, 0), new SysIntX3(rows, cols, slices), 0, 0, new IntPtr(p), events);
+                }
+
+                /// <summary>Writes variable to device</summary>
+                /// <param name="Values">Values to write to device</param>
+                /// <param name="CQ">Command queue to use</param>
+                /// <param name="BlockingWrite">TRUE to return only after completed writing.</param>
+                /// <param name="events">OpenCL Event associated to this operation</param>
+                public void WriteToDevice(float[] Values, ComputeCommandQueue CQ, bool BlockingWrite, ICollection<ComputeEventBase> events)
+                {
+                    if (Values.Length != OriginalVarLength) throw new Exception("Values length should be the same as allocated length");
+                    unsafe
+                    {
+                        fixed (void* ponteiro = Values)
+                        {
+                            WriteToDevice(ponteiro, CQ, BlockingWrite, events);
+                        }
+                    }
+                }
+
+                /// <summary>Writes variable to device</summary>
+                /// <param name="Values">Values to write to device</param>
+                public void WriteToDevice(float[] Values)
+                {
+                    //CLEvent Event = new CLEvent();
+                    WriteToDevice(Values, CommQueues[DefaultCQ], true, null);
+                    //OpenCLDriver.clReleaseEvent(Event);
+                }
+
+                /// <summary>Writes variable to device</summary>
+                /// <param name="Values">Values to write to device</param>
+                /// <param name="CQ">Command queue to use</param>
+                /// <param name="BlockingWrite">TRUE to return only after completed writing.</param>
+                /// <param name="events">OpenCL Event associated to this operation</param>
+
+                public void WriteToDevice(int[] Values, ComputeCommandQueue CQ, bool BlockingWrite, ICollection<ComputeEventBase> events)
+                {
+                    if (Values.Length != OriginalVarLength) throw new Exception("Values length should be the same as allocated length");
+                    unsafe
+                    {
+                        fixed (void* ponteiro = Values)
+                        {
+                            WriteToDevice(ponteiro, CQ, BlockingWrite, events);
+                        }
+                    }
+                }
+
+                /// <summary>Writes variable to device</summary>
+                /// <param name="Values">Values to write to device</param>
+                public void WriteToDevice(int[] Values)
+                {
+                    //CLEvent Event = new CLEvent();
+                    WriteToDevice(Values, CommQueues[DefaultCQ], true, null);
+                    //OpenCLDriver.clReleaseEvent(Event);
+                }
+
+                /// <summary>Writes variable to device</summary>
+                /// <param name="Values">Values to write to device</param>
+                /// <param name="CQ">Command queue to use</param>
+                /// <param name="BlockingWrite">TRUE to return only after completed writing.</param>
+                /// <param name="events">OpenCL Event associated to this operation</param>
+
+                public void WriteToDevice(byte[] Values, ComputeCommandQueue CQ, bool BlockingWrite, ICollection<ComputeEventBase> events)
+                {
+                    if (Values.Length != OriginalVarLength) throw new Exception("Values length should be the same as allocated length");
+                    unsafe
+                    {
+                        fixed (void* ponteiro = Values)
+                        {
+                            WriteToDevice(ponteiro, CQ, BlockingWrite, events);
+                        }
+                    }
+                }
+
+                /// <summary>Writes variable to device</summary>
+                /// <param name="Values">Values to write to device</param>
+                public void WriteToDevice(byte[] Values)
+                {
+                    //CLEvent Event = new CLEvent();
+                    WriteToDevice(Values, CommQueues[DefaultCQ], true, null);
+                    //OpenCLDriver.clReleaseEvent(Event);
+                }
+
+                #endregion
+
+                #region Read from Device memory. float[], int[], byte[], Bitmap
+
+                private unsafe void ReadFromDeviceTo(void* p, ComputeCommandQueue CQ, bool BlockingRead, ICollection<ComputeEventBase> events)
+                {
+                    if (CreatedFromGLBuffer && (!AcquiredInOpenCL)) throw new Exception("Attempting to use a variable created from OpenGL buffer without acquiring. Should use CLGLInteropFunctions to properly acquire and release these variables");
+                    CQ.Read((ComputeImage)VarPointer, BlockingRead, new SysIntX3(0, 0, 0), new SysIntX3(rows, cols, slices), 0, 0, new IntPtr(p), events);
+
+                    this.Dirty = false;
+                }
+
+                /// <summary>Reads variable from device.</summary>
+                /// <param name="Values">Values to store data coming from device</param>
+                /// <param name="CQ">Command queue to use</param>
+                /// <param name="BlockingRead">TRUE to return only after completed reading.</param>
+                /// <param name="events">OpenCL Event associated with this operation</param>
+
+                public void ReadFromDeviceTo(float[] Values, ComputeCommandQueue CQ, bool BlockingRead, ICollection<ComputeEventBase> events)
+                {
+                    if (Values.Length != OriginalVarLength) throw new Exception("Values length should be the same as allocated length");
+
+                    unsafe
+                    {
+                        fixed (void* ponteiro = Values)
+                        {
+                            ReadFromDeviceTo(ponteiro, CQ, BlockingRead, events);
+                        }
+                    }
+
+                    this.Dirty = false;
+                }
+                public void ReadFromDeviceToBuffer()
+                {
+                    if (Dirty)
+                    {
+                        //CLEvent Event = new CLEvent();
+                        ReadFromDeviceTo(BackingBuffer, CommQueues[DefaultCQ], true, null);
+                    }
+                    this.Dirty = false;
+                    //OpenCLDriver.clReleaseEvent(Event);
+                }
+                /// <summary>Reads variable from device. Does not return until data has been copied.</summary>
+                /// <param name="Values">Values to store data coming from device</param>
+                public void ReadFromDeviceTo(float[] Values)
+                {
+                    //CLEvent Event = new CLEvent();
+                    ReadFromDeviceTo(Values, CommQueues[DefaultCQ], true, null);
+
+                    this.Dirty = false;
+                    //OpenCLDriver.clReleaseEvent(Event);
+                }
+
+                /// <summary>Reads variable from device.</summary>
+                /// <param name="Values">Values to store data coming from device</param>
+                /// <param name="CQ">Command queue to use</param>
+                /// <param name="BlockingRead">TRUE to return only after completed reading.</param>
+                /// <param name="events">OpenCL Event associated with this operation</param>
+                public void ReadFromDeviceTo(int[] Values, ComputeCommandQueue CQ, bool BlockingRead, ICollection<ComputeEventBase> events)
+                {
+                    if (Values.Length != OriginalVarLength) throw new Exception("Values length should be the same as allocated length");
+
+                    unsafe
+                    {
+                        fixed (void* ponteiro = Values)
+                        {
+                            ReadFromDeviceTo(ponteiro, CQ, BlockingRead, events);
+                        }
+                    }
+
+                    this.Dirty = false;
+                }
+
+                /// <summary>Reads variable from device. Does not return until data has been copied.</summary>
+                /// <param name="Values">Values to store data coming from device</param>
+                public void ReadFromDeviceTo(int[] Values)
+                {
+                    //CLEvent Event = new CLEvent();
+                    ReadFromDeviceTo(Values, CommQueues[DefaultCQ], true, null);
+
+                    this.Dirty = false;
+                    //OpenCLDriver.clReleaseEvent(Event);
+                }
+
+                /// <summary>Reads variable from device.</summary>
+                /// <param name="Values">Values to store data coming from device</param>
+                /// <param name="CQ">Command queue to use</param>
+                /// <param name="BlockingRead">TRUE to return only after completed reading.</param>
+                /// <param name="events">OpenCL Event associated with this operation</param>
+
+                public void ReadFromDeviceTo(byte[] Values, ComputeCommandQueue CQ, bool BlockingRead, ICollection<ComputeEventBase> events)
+                {
+                    if (Values.Length != OriginalVarLength) throw new Exception("Values length should be the same as allocated length");
+
+                    unsafe
+                    {
+                        fixed (void* ponteiro = Values)
+                        {
+                            ReadFromDeviceTo(ponteiro, CQ, BlockingRead, events);
+                        }
+                    }
+
+                    this.Dirty = false;
+                }
+
+                /// <summary>Reads variable from device. Does not return until data has been copied.</summary>
+                /// <param name="Values">Values to store data coming from device</param>
+                public void ReadFromDeviceTo(byte[] Values)
+                {
+                    //CLEvent Event = new CLEvent();
+                    ReadFromDeviceTo(Values, CommQueues[DefaultCQ], true, null);
+
+                    this.Dirty = false;
+                    //OpenCLDriver.clReleaseEvent(Event);
+                }
+
+                #endregion
+
+            }
 
             /// <summary>Kernels class</summary>
             public class Kernel : IDisposable
@@ -1473,23 +1749,24 @@ namespace OpenTKWrapper
                 {
                     //if (Variables.Length != nArgs) throw new Exception("Wrong number of arguments");
                     //if (Vars != Variables){
-                        //Vars = Variables;
+                    //Vars = Variables;
                     bool hasNoValueType = false;
-                        for (int i = 0; i < Variables.Length; i++)
+
+                    for (int i = 0; i < Variables.Length; i++)
+                    {
+                        if (Variables[i] is CLCalc.Program.Variable || Variables[i] is CLCalc.Program.Image2D || Variables[i] is CLCalc.Program.Image3D)
                         {
-                            if (Variables[i] is CLCalc.Program.Variable || Variables[i] is CLCalc.Program.Image2D)
-                            {
-                                hasNoValueType = true;
-                            }
-                            else
-                            {
-                                if (hasNoValueType)
-                                {
-                                    throw new Exception("Value type follows Variable or Image2D type in list of arguments! "+Variables[i].GetType()+" in "+this.kernel.FunctionName+"()");
-                                }
-                            }
-                            Variables[i].SetAsArgument(i, kernel);
+                            hasNoValueType = true;
                         }
+                        else
+                        {
+                            if (hasNoValueType)
+                            {
+                                throw new Exception("Value type follows Variable or Image2D type in list of arguments! " + Variables[i].GetType() + " in " + this.kernel.FunctionName + "()");
+                            }
+                        }
+                        Variables[i].SetAsArgument(i, kernel);
+                    }
                     //}
                 }
 
@@ -1502,8 +1779,8 @@ namespace OpenTKWrapper
                 {
                     SetArguments(Arguments);
 
-                    long[] globWSize=new long[GlobalWorkSize.Length];
-                    for (int i=0;i<globWSize.Length;i++) globWSize[i]=GlobalWorkSize[i];
+                    long[] globWSize = new long[GlobalWorkSize.Length];
+                    for (int i = 0; i < globWSize.Length; i++) globWSize[i] = GlobalWorkSize[i];
 
                     CQ.Execute(kernel, null, globWSize, null, events);
 
@@ -1633,7 +1910,7 @@ namespace OpenTKWrapper
                 #region Kernels
                 /// <summary>Float vector sum kernel</summary>
                 private CLCalc.Program.Kernel floatVecSum;
-                
+
                 /// <summary>float matrix multiplication kernel</summary>
                 private CLCalc.Program.Kernel floatMatrixMult;
 
@@ -1986,7 +2263,7 @@ namespace OpenTKWrapper
                     //ajeita o vetor com respeito as trocas de linha
                     max[0] = 1;
                     floatLUUnscramble.Execute(args, max);
-                    
+
                     //Forward subst
                     for (int i = n - 1; i >= 1; i--)
                     {
@@ -2048,7 +2325,7 @@ namespace OpenTKWrapper
                     {
                         varJ.WriteToDevice(J);
                         max[0] = J[0];
-                        floatLUCalcBetas.Execute(args,max);
+                        floatLUCalcBetas.Execute(args, max);
 
                         max[0] = n - J[0];
                         floatLUCalcAlphas.Execute(args, max);
@@ -2742,10 +3019,10 @@ namespace OpenTKWrapper
                     CLCalc.Program.Variable varindx;
                     CLCalc.Program.Variable MLUDecomp = LUDecomp(M, n, out varindx);
 
-                    double[] localMLUDecomp = new double[n*n];
+                    double[] localMLUDecomp = new double[n * n];
                     MLUDecomp.ReadFromDeviceTo(localMLUDecomp);
 
-                    
+
                     //Backsubstitution
                     CLCalc.Program.Variable varx = LUBackSubstitute(MLUDecomp, b, n, varindx);
 
@@ -3968,7 +4245,7 @@ namespace OpenTKWrapper
                     for (int i = 0; i < nParticles; i++) alocPart[i] = 1f; //inicializa massas como 1 e tamanhos de colisao como 1
                     CL_masses = new CLCalc.Program.Variable(alocPart);
                     CL_collisionSizes = new CLCalc.Program.Variable(alocPart);
-                    
+
                     //escalares
                     CL_t = new CLCalc.Program.Variable(t);
                     CL_step = new CLCalc.Program.Variable(step);

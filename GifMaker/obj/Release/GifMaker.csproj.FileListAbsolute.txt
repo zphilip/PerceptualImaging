@@ -1,0 +1,9 @@
+C:\Users\Blake\Documents\SmartGit\Whittle\PerceptualImaging\GifMaker\bin\Release\Gif.Components.dll
+C:\Users\Blake\Documents\SmartGit\Whittle\PerceptualImaging\GifMaker\obj\Release\ResolveAssemblyReference.cache
+C:\Users\Blake\Documents\SmartGit\Whittle\PerceptualImaging\GifMaker\obj\Release\Gif.Components.dll
+C:\Users\perc\Documents\SmartGit\Whittle\PerceptualImaging\GifMaker\bin\Release\Gif.Components.dll
+C:\Users\perc\Documents\SmartGit\Whittle\PerceptualImaging\GifMaker\obj\Release\ResolveAssemblyReference.cache
+C:\Users\perc\Documents\SmartGit\Whittle\PerceptualImaging\GifMaker\obj\Release\Gif.Components.dll
+C:\Users\bclucas\Documents\SmartGit\Whittle\PerceptualImaging\GifMaker\bin\Release\Gif.Components.dll
+C:\Users\bclucas\Documents\SmartGit\Whittle\PerceptualImaging\GifMaker\obj\Release\ResolveAssemblyReference.cache
+C:\Users\bclucas\Documents\SmartGit\Whittle\PerceptualImaging\GifMaker\obj\Release\Gif.Components.dll
