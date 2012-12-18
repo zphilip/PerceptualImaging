@@ -23,17 +23,27 @@ using OpenTK;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 using System.IO;
+using OpenTK.Graphics.OpenGL;
+using OpenTK.Graphics;
 using MathNet.Numerics.LinearAlgebra.Single;
 using MathNet.Numerics.LinearAlgebra.Generic.Factorization;
 using MathNet.Numerics.LinearAlgebra.Generic;
 namespace Perceptual.Foundation
 {
+    [Serializable()]
     public struct float4
     {
         public float x, y, z, w;
         public float4(float[] val)
         {
             x = val[0]; y = val[1]; z = val[2]; w = val[3];
+        }
+        public float4(Vector3 v)
+        {
+            this.x = v.X;
+            this.y = v.Y;
+            this.z = v.Z;
+            this.w = 1.0f;
         }
         public float4(float val)
         {
@@ -76,13 +86,23 @@ namespace Perceptual.Foundation
                 this.z <= bbox.maxPoint.z);
         }
 
+
         public static implicit operator CLCalc.Program.MemoryObject(float4 pt)
         {
             return new CLCalc.Program.Value<float4>(pt);
         }
+
         public static implicit operator Vector4(float4 M)
         {
             return new Vector4(M.x, M.y, M.z, M.w);
+        }
+        public static implicit operator Color4(float4 M)
+        {
+            return new Color4(M.x, M.y, M.z, M.w);
+        }
+        public static implicit operator float4(Color4 M)
+        {
+            return new float4(M.R,M.G,M.B,M.A);
         }
         public static implicit operator Vector3(float4 M)
         {
@@ -228,6 +248,10 @@ namespace Perceptual.Foundation
         {
             x = val[0]; y = val[1]; z = val[2];
         }
+        public float3(float val)
+        {
+            x = val; y = val; z = val;
+        }
         public override string ToString()
         {
             return "(" + x + "," + y + "," + z + ")";
@@ -275,6 +299,14 @@ namespace Perceptual.Foundation
         public static float3 operator -(float3 c1, float3 c2)
         {
             return new float3(c1.x - c2.x, c1.y - c2.y, c1.z - c2.z);
+        }
+        public static float3 operator +(float3 c1, float c2)
+        {
+            return new float3(c1.x + c2, c1.y + c2, c1.z + c2);
+        }
+        public static float3 operator -(float3 c1, float c2)
+        {
+            return new float3(c1.x - c2, c1.y - c2, c1.z - c2);
         }
         public static float3 operator /(float3 c1, float3 c2)
         {
@@ -687,6 +719,25 @@ namespace Perceptual.Foundation
             m.M44 = M.m33;
             return m;
         }
+        public override string ToString()
+        {
+            return "\n" + m00 + " " +
+                   m01 + " " +
+                   m02 + " " +
+                   m03 + "\n" +
+                   m10 + " " +
+                   m11 + " " +
+                   m12 + " " +
+                   m13 + " " +
+                   m20 + "\n" +
+                   m21 + " " +
+                   m22 + " " +
+                   m23 + " " +
+                   m30 + " " +
+                   m31 + " " +
+                   m32 + " " +
+                   m33 + "\n";
+        }
         public static implicit operator Matrix4f(Matrix4 m)
         {
             Matrix4f M = new Matrix4f();
@@ -797,6 +848,8 @@ namespace Perceptual.Foundation
             return modelView;
         }
 
+
+
         public static Quaternion ToQuaternion(Matrix4 m)
         {
 
@@ -892,12 +945,12 @@ namespace Perceptual.Foundation
             Bitmap image = new Bitmap(width, height);
             System.Drawing.Rectangle rect = new System.Drawing.Rectangle(0, 0, image.Width, image.Height);
             System.Drawing.Imaging.BitmapData bitmapdata = image.LockBits(rect, System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-            
+
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)All.ClampToEdge);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)All.ClampToEdge);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)All.Linear);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)All.Linear);
-            
+
             GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, image.Width, image.Height,
                 0, OpenTK.Graphics.OpenGL.PixelFormat.Rgba, PixelType.UnsignedByte, bitmapdata.Scan0);
             image.UnlockBits(bitmapdata);
@@ -978,6 +1031,7 @@ namespace Perceptual.Foundation
                 int img = i % 4;
                 data2[off + img * sz] = data[i];
             }
+
             using (Stream dest = File.Create(path))
             {
 
@@ -988,6 +1042,59 @@ namespace Perceptual.Foundation
                 }
                 dest.Close();
             }
+        }
+
+        public static CLCalc.Program.MemoryObject ToMemoryObject(float pt)
+        {
+            return new CLCalc.Program.Value<float>(pt);
+        }
+
+        public static CLCalc.Program.MemoryObject ToMemoryObject(int pt)
+        {
+            return new CLCalc.Program.Value<int>(pt);
+        }
+
+        public static CLCalc.Program.MemoryObject ToMemoryObject(char pt)
+        {
+            return new CLCalc.Program.Value<char>(pt);
+        }
+
+        public static CLCalc.Program.MemoryObject ToMemoryObject(byte pt)
+        {
+            return new CLCalc.Program.Value<byte>(pt);
+        }
+
+        public static CLCalc.Program.MemoryObject ToMemoryObject(long pt)
+        {
+            return new CLCalc.Program.Value<long>(pt);
+        }
+        public static FileStream WriteAsyncRawImage2D(CLCalc.Program.Image2D imageBuffer, string path)
+        {
+            System.Console.WriteLine("ASYNC SAVING IMAGE " + path);
+            FileStream dest = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None, 1, true);
+            int sz = imageBuffer.Width * imageBuffer.Height;
+            float[] data = new float[sz * 4];
+            float[] data2 = new float[sz * 4];
+            imageBuffer.ReadFromDeviceTo(data);
+            for (int i = 0; i < data.Length; i++)
+            {
+                int off = i / 4;
+                int img = i % 4;
+                data2[off + img * sz] = data[i];
+            }
+
+            byte[] bytes = new byte[4 * data2.Length];
+            int index = 0;
+            foreach (float val in data2)
+            {
+                byte[] buffer = System.BitConverter.GetBytes(val);
+                bytes[index++] = buffer[0];
+                bytes[index++] = buffer[1];
+                bytes[index++] = buffer[2];
+                bytes[index++] = buffer[3];
+            }
+            dest.BeginWrite(bytes, 0, bytes.Length, null, null);
+            return dest;
         }
         public static void WriteByteDataToFile(CLCalc.Program.Variable dataBuffer, int width, int height, int comp, string path)
         {
@@ -1062,6 +1169,55 @@ namespace Perceptual.Foundation
                 dest.Close();
             }
         }
+        public static void WriteIntDataToFile(CLCalc.Program.Variable dataBuffer, int rows, int cols, int slices, int comp, int offset, string path)
+        {
+
+            System.Console.WriteLine("SAVING IMAGE " + path);
+            int sz = rows * cols * slices;
+            int[] data = new int[sz * comp + offset];
+            int[] data2 = new int[sz * comp];
+            dataBuffer.ReadFromDeviceTo(data);
+            for (int i = offset; i < data.Length; i++)
+            {
+                int off = (i - offset) / comp;
+                int img = (i - offset) % comp;
+                data2[off + img * sz] = data[i];
+            }
+            using (Stream dest = File.Create(path))
+            {
+
+                for (int i = 0; i < data2.Length; i++)
+                {
+                    int val = data2[i];
+                    byte[] buffer = System.BitConverter.GetBytes(val);
+                    dest.Write(buffer, 0, buffer.Length);
+                }
+                dest.Close();
+            }
+        }
+        public static void WriteFloatDataToFile(float[] data, int rows, int cols, int slices, int comp, string path)
+        {
+
+            System.Console.WriteLine("SAVING IMAGE " + path);
+            int sz = rows * cols * slices;
+            float[] data2 = new float[sz * comp];
+            for (int i = 0; i < data.Length; i++)
+            {
+                int off = i / comp;
+                int img = i % comp;
+                data2[off + img * sz] = data[i];
+            }
+            using (Stream dest = File.Create(path))
+            {
+
+                foreach (float val in data2)
+                {
+                    byte[] buffer = System.BitConverter.GetBytes(val);
+                    dest.Write(buffer, 0, buffer.Length);
+                }
+                dest.Close();
+            }
+        }
         public static void WriteFloatDataToFile(CLCalc.Program.Variable dataBuffer, int rows, int cols, int slices, int comp, string path)
         {
 
@@ -1086,6 +1242,102 @@ namespace Perceptual.Foundation
                 }
                 dest.Close();
             }
+        }
+
+        public static void WriteFloatDataToFile(float[] data, int width, int height, int comp, string path)
+        {
+
+            System.Console.WriteLine("SAVING DATA " + path);
+            int sz = width * height * comp;
+            float[] data2 = new float[sz];
+            for (int i = 0; i < data.Length; i++)
+            {
+                int off = i / comp;
+                int img = i % comp;
+                data2[off + img * sz] = data[i];
+            }
+            using (Stream dest = File.Create(path))
+            {
+
+                foreach (float val in data2)
+                {
+                    byte[] buffer = System.BitConverter.GetBytes(val);
+                    dest.Write(buffer, 0, buffer.Length);
+                }
+                dest.Close();
+            }
+        }
+        public static Matrix4 ReadMatrixFromFile(string file)
+        {
+
+            float[] data = new float[16];
+            using (Stream stream = File.OpenRead(file))
+            {
+                byte[] buffer = new byte[4];
+                for (int i = 0; i < data.Length; i++)
+                {
+                    stream.Read(buffer, 0, buffer.Length);
+                    data[i] = System.BitConverter.ToSingle(buffer, 0);
+                }
+                stream.Close();
+            }
+            Matrix4 CurrentPose = new Matrix4();
+            CurrentPose.M11 = data[0]; CurrentPose.M12 = data[1]; CurrentPose.M13 = data[2]; CurrentPose.M14 = data[3];
+            CurrentPose.M21 = data[4]; CurrentPose.M22 = data[5]; CurrentPose.M23 = data[6]; CurrentPose.M24 = data[7];
+            CurrentPose.M31 = data[8]; CurrentPose.M32 = data[9]; CurrentPose.M33 = data[10]; CurrentPose.M34 = data[11];
+            CurrentPose.M41 = data[12]; CurrentPose.M42 = data[13]; CurrentPose.M43 = data[14]; CurrentPose.M44 = data[15];
+            return CurrentPose;
+        }
+        public static float[] ReadFloatFromFile(string file, int size)
+        {
+
+            float[] data = new float[size];
+            using (Stream stream = File.OpenRead(file))
+            {
+                byte[] buffer = new byte[4];
+                for (int i = 0; i < size; i++)
+                {
+                    stream.Read(buffer, 0, buffer.Length);
+                    data[i] = System.BitConverter.ToSingle(buffer, 0);
+                }
+                stream.Close();
+            }
+            float[] data2 = new float[size];
+            for (int i = 0; i < data.Length; i++)
+            {
+                int off = i / 4;
+                int img = i % 4;
+                data2[i] = data[off + img * (size / 4)];
+            }
+            return data2;
+        }
+        public static int[] ReadIntFromFile(string file, int size)
+        {
+
+            int[] data = new int[size];
+            using (Stream stream = File.OpenRead(file))
+            {
+                byte[] buffer = new byte[4];
+                for (int i = 0; i < size; i++)
+                {
+                    stream.Read(buffer, 0, buffer.Length);
+                    data[i] = System.BitConverter.ToInt32(buffer, 0);
+                }
+                stream.Close();
+            }
+            return data;
+        }
+        public static byte[] ReadByteFromFile(string file, int size)
+        {
+
+            byte[] data = new byte[size];
+            using (Stream stream = File.OpenRead(file))
+            {
+
+                stream.Read(data, 0, size);
+                stream.Close();
+            }
+            return data;
         }
         public static void WriteFloatDataToFile(CLCalc.Program.Variable dataBuffer, int width, int height, int comp, string path)
         {

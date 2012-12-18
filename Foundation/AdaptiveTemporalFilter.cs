@@ -53,13 +53,14 @@ namespace Perceptual.Foundation
         {
             return uvImage;
         }
-        public float[] GetDepthBackBuffer()
-        {
-            return depthCopy;
-        }
+
         public CLCalc.Program.Image2D GetColorImage()
         {
             return rgbImage;
+        }
+        public float[] GetDepthBackBuffer()
+        {
+            return depthCopy;
         }
         public void Process(BaseCameraApplication capture)
         {

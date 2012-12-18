@@ -33,6 +33,14 @@ namespace Perceptual.Foundation
         {
             return minIR;
         }
+        public float GetCameraCenterX()
+        {
+            return centerX;
+        }
+        public float GetCameraCenterY()
+        {
+            return centerY;
+        }
         public float GetMinDepth()
         {
             return minDepth;
@@ -43,19 +51,19 @@ namespace Perceptual.Foundation
         }
         public string GetPreprocessCode()
         {
-           string code=
-            "\n#define WIDTH " + depthFrame.Width +
-            "\n#define HEIGHT " + depthFrame.Height +
-            "\n#define CENTER_X " + centerX.ToString(".0000") + "f" +
-            "\n#define CENTER_Y " + centerY.ToString(".0000") + "f" +
-            "\n#define COLOR_WIDTH " + colorFrame.Width +
-            "\n#define COLOR_HEIGHT " + colorFrame.Height +
-            "\n#define MIN_IR " + minIR +
-            "\n#define MIN_DEPTH " + minDepth.ToString(".0000") + "f" +
-            "\n#define MAX_DEPTH " + maxDepth.ToString(".0000") + "f" +
-            "\n#define FOCAL_X " + focalX.ToString(".0000") + "f" +
-            "\n#define FOCAL_Y " + focalY.ToString(".0000") + "f\n";
-           return code;
+            string code =
+             "\n#define WIDTH " + depthFrame.Width +
+             "\n#define HEIGHT " + depthFrame.Height +
+             "\n#define CENTER_X " + centerX.ToString(".0000") + "f" +
+             "\n#define CENTER_Y " + centerY.ToString(".0000") + "f" +
+             "\n#define COLOR_WIDTH " + colorFrame.Width +
+             "\n#define COLOR_HEIGHT " + colorFrame.Height +
+             "\n#define MIN_IR " + minIR +
+             "\n#define MIN_DEPTH " + minDepth.ToString(".0000") + "f" +
+             "\n#define MAX_DEPTH " + maxDepth.ToString(".0000") + "f" +
+             "\n#define FOCAL_X " + focalX.ToString(".0000") + "f" +
+             "\n#define FOCAL_Y " + focalY.ToString(".0000") + "f\n";
+            return code;
         }
         public Matrix4f GetGroundPlane()
         {
@@ -77,6 +85,10 @@ namespace Perceptual.Foundation
         public BoundingBox GetBoundingBox()
         {
             return bbox;
+        }
+        public void SetBoundingBox(BoundingBox bbox)
+        {
+            this.bbox = bbox;
         }
         public CameraDevice(string outputDirectory)
         {
@@ -101,6 +113,10 @@ namespace Perceptual.Foundation
         public void SetOutputDirectory(string outputDirectory)
         {
             this.outputDirectory = outputDirectory;
+        }
+        public string GetOutputDirectory()
+        {
+            return outputDirectory;
         }
         public void SetFrameId(int id)
         {

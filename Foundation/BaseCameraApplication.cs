@@ -294,7 +294,7 @@ namespace Perceptual.Foundation
             glw.ReDraw();
 
         }
-        protected void Release(object sender, FormClosingEventArgs e)
+        protected virtual void Release(object sender, FormClosingEventArgs e)
         {
             timer.Stop();
             Dispose();

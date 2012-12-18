@@ -13,12 +13,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using OpenTKWrapper;
 namespace Perceptual.Foundation
 {
     public interface CameraDataFilter
     {
         void Process(BaseCameraApplication capture);
         void Initialize(BaseCameraApplication capture);
+        CLCalc.Program.Variable GetMotionBuffer();
+        CLCalc.Program.Image2D GetDepthImage();
+        CLCalc.Program.Image2D GetTextureImage();
+        CLCalc.Program.Image2D GetColorImage();
     }
 }

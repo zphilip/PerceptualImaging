@@ -9,7 +9,6 @@ Copyright(c) 2012 Intel Corporation. All Rights Reserved.
 @Author {Blake C. Lucas (img.science@gmail.com)}
 *******************************************************************************/
 
-#define CONFIDENCE_THRESHOLD 100.0f
 #define DEPTH_RANGE_THRESH 3
 #define IR_RANGE_THRESH 10
 #define MIN_CONFIDENCE 100
@@ -116,7 +115,7 @@ kernel void SmallFilter(global float4* input,global float4* output){
 	for(k=x-1; k <= x+1; k++) {
 		for(m=y-1; m <= y+1; m++){
 			float4 value=input[k+m*WIDTH];
-			if(value.w >=CONFIDENCE_THRESHOLD) {
+			if(value.w >=MIN_IR) {
 				mean+=depth[size] =value.z;
 				size++;
 			}
@@ -149,7 +148,7 @@ kernel void LargeFilter(global float4* input,global float4* output){
 	for(k=x-2; k <= x+2; k++) {
 		for(m=y-2; m <= y+2; m++){
 			float4 value=input[k+m*WIDTH];
-			if(value.w >=CONFIDENCE_THRESHOLD) {
+			if(value.w >=MIN_IR) {
 				mean+=depth[size] =value.z;
 				size++;
 			}
@@ -177,7 +176,7 @@ kernel void ErodeFilter(global float4* input,global float4* output){
 	for(k=x-1; k <= x+1; k++) {
 		for(m=y-1; m <= y+1; m++){
 			float4 value=input[k+m*WIDTH];
-			if(value.w >=CONFIDENCE_THRESHOLD) {
+			if(value.w >=MIN_IR) {
 				size++;
 			}
 		}
@@ -258,6 +257,63 @@ kernel void UpdateFilter(int index,global float4* motionBuffer,global float4* de
 	}
 	motionBuffer[gid].w=motion;
 }
+
+constant float m_RotationMatrix[]={
+		0.99996847f,
+		0.0012344177f,
+		-0.0078440439f,
+		0.0012864748f,
+		-0.99997717f,
+		0.0066349362f,
+		0.0078356741f,
+		0.0066448180f,
+		0.99994725f};
+constant float m_ColorDistortions[]={
+		0.022575200f,
+		-0.16266800f,
+		0.18613800f,	
+		0.00000000f,	
+		0.00000000f};
+		
+constant float m_DepthDistortions[]={
+		-0.17010300f,
+		0.14406399f,
+		-0.047699399f,
+		0.00000000f,
+		0.00000000f};
+
+constant float m_TransMatrix[]={24.492104f,0.50799217f,-0.86258771};//y component is positive because we do not need to negate pos3d.y
+#define COLOR_FOCAL_X 583.07898f
+#define COLOR_FOCAL_Y 596.20300f
+#define COLOR_CENTER_X 319.00000f
+#define COLOR_CENTER_Y 239.00000f
+
+inline float2 MapDepthToColor(float4 pos3D){
+	float4 pos3DColor;
+    
+	
+	float2 tex2d=(float2)(-1,-1);
+	
+	if(pos3D.z>MIN_DEPTH&&pos3D.z<MAX_DEPTH&&pos3D.w>=MIN_IR){
+		pos3D.w=1.0f;
+		pos3D.x=-pos3D.x;
+	
+		pos3D.x-=m_TransMatrix[0];
+		pos3D.y-=m_TransMatrix[1];
+		pos3D.z-=m_TransMatrix[2];
+   
+		pos3DColor.x = pos3D.x*m_RotationMatrix[0]+pos3D.y*m_RotationMatrix[1]+pos3D.z*m_RotationMatrix[2];
+		pos3DColor.y = pos3D.x*m_RotationMatrix[3]+pos3D.y*m_RotationMatrix[4]+pos3D.z*m_RotationMatrix[5];
+		pos3DColor.z = pos3D.x*m_RotationMatrix[6]+pos3D.y*m_RotationMatrix[7]+pos3D.z*m_RotationMatrix[8];
+		float fy = pos3DColor.y/pos3DColor.z;
+        float fx = pos3DColor.x/pos3DColor.z;
+        float fr2= fy*fy+fx*fx;
+        float fDistC = 1+m_ColorDistortions[0]*fr2+m_ColorDistortions[1]*fr2*fr2+m_ColorDistortions[2]*fr2*fr2*fr2;    
+        tex2d.y = (fy*fDistC*COLOR_FOCAL_Y + COLOR_CENTER_Y)/(float)COLOR_HEIGHT;
+        tex2d.x = (COLOR_CENTER_X-fx*fDistC*COLOR_FOCAL_X)/(float)COLOR_WIDTH;
+	}
+	return tex2d;
+}
 kernel void CopyImage(global float4* depthData,global float2* uvData,__write_only image2d_t uvImage,write_only image2d_t depthImage)
 {
     int i = get_global_id(0);
@@ -266,19 +322,21 @@ kernel void CopyImage(global float4* depthData,global float2* uvData,__write_onl
     int index=i+j*get_global_size(0);
     float4 value=depthData[index];
 
-	float2 uv=uvData[index];
 	const sampler_t imageSampler = CLK_NORMALIZED_COORDS_FALSE | CLK_ADDRESS_CLAMP_TO_EDGE | CLK_FILTER_NEAREST;
 	
-	if(uv.x<0||uv.y<0||uv.y>1.0f||uv.x>1.0f||value.z<MIN_DEPTH||value.z>MAX_DEPTH){
+	if(value.z<MIN_DEPTH||value.z>MAX_DEPTH){
 		value.w=0.0f;
 		value.z=MAX_DEPTH*4;
 	}
 	value.x=(i-CENTER_X)*value.z/FOCAL_X; 
 	value.y=(CENTER_Y-j)*value.z/FOCAL_Y; 
 	
+	float2 uv=MapDepthToColor(value);
 	write_imagef(depthImage, coords,value);  
 	
 	depthData[index]=value;
-	write_imagef(uvImage, coords,(float4)(uv.x,uv.y,0.0f,0.0f));  
+	uvData[index]=uv;
+	write_imagef(uvImage, coords,(float4)(uv.x,uv.y,0,0));  
 		
 }
+
